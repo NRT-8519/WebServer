@@ -1,69 +1,84 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using WebServer.Auth;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebServer.Models
 {
+    [Table("users")]
+    [PrimaryKey("Id")]
     public class UserModel
     {
-        [DisallowNull]
-        private string username, email, password;
-
-        [DisallowNull]
-        private bool isDisabled, isExpired;
-
-        [DisallowNull]
-        private DateTime passwordExpiryDate;
-
-        private List<string> roles = new();
-
-        public string Username { get => username; set => username = value; }
-        public string Email { get => email; set => email = value; }
-        public string Password { get => password; set => password = value; }
-
-        public bool IsDisabled { get => isDisabled; set => isDisabled = value; }
-        public bool IsExpired { get => isExpired; set => isExpired = value; }
-
-        public DateTime PasswordExpiryDate { get => passwordExpiryDate; set => passwordExpiryDate = value; }
-
-        public List<string> Roles { get => roles; set => roles = value; }
-        
         /// <summary>
-        ///    Constructor that sets the default initial values
+        /// User's ID
         /// </summary>
-        private UserModel()
-        {
-            this.IsDisabled = false;
-            this.IsExpired = false;
-            this.PasswordExpiryDate = DateTime.Now.AddDays(180);
-            this.Roles.Add(Role.ROLE_USER);
-        }
+        [Column("id")]
+        [Key]
+        [Required]
+        public uint? Id { get; set; }
 
-        public UserModel(string username, string email, string password): this()
-        {
-            this.Username = username;
-            this.Email = email;
-            this.Password = password;
-        }
+        /// <summary>
+        /// User's UUID
+        /// </summary>
+        [Column("uuid")]
+        [Key]
+        [Required]
+        public Guid? UUID { get; set; }
 
-        public UserModel(string username, string email, string password, bool isDisabled, bool isExpired) : this(username, email, password)
-        {
-            this.IsDisabled = isDisabled;
-            this.IsExpired = isExpired;
+        /// <summary>
+        /// User's Username value
+        /// </summary>
+        [Column("username")]
+        [Key]
+        [Required]
+        public string Username { get; set; }
 
-            if (isExpired)
-            {
-                this.PasswordExpiryDate = DateTime.Now;
-            }
-        }
+        /// <summary>
+        /// User's Password value. Should be encrypted.
+        /// </summary>
+        [Column("password")]
+        [Required]
+        public string Password { get; set; }
 
-        public UserModel(string username, string email, string password, bool isDisabled, bool isExpired, DateTime passwordExpiryDate) : this(username, email, password, isDisabled, isExpired)
-        {
-            this.PasswordExpiryDate = passwordExpiryDate;
-        }
+        /// <summary>
+        /// List of user's emails. One user can have more than one email.
+        /// </summary>
+        [Required]
+        [ForeignKey("UserId")]
+        public List<UserEmail> Emails { get; set; } = new List<UserEmail>();
 
-        public UserModel(string username, string email, string password, bool isDisabled, bool isExpired, DateTime passwordExpiryDate, List<string> roles) : this(username, email, password, isDisabled, isExpired, passwordExpiryDate)
-        {
-            this.Roles = roles;
-        }
+        /// <summary>
+        /// User's phone numbers. One user can have more than one phone number.
+        /// </summary>
+        [Required]
+        [ForeignKey("UserId")]
+        public List<UserPhoneNumber> PhoneNumbers { get; set; } = new List<UserPhoneNumber>();
+
+        /// <summary>
+        /// Specifies whether a user's account is disabled.
+        /// </summary>
+        [Required]
+        [Column("disabled")]
+        public bool IsDisabled { get; set; }
+
+        /// <summary>
+        /// Specifies whether a user's password has expired and needs to be changed.
+        /// </summary>
+        [Required]
+        [Column("expired")]
+        public bool IsExpired { get; set; }
+
+        /// <summary>
+        /// Specifies password expiry date.
+        /// </summary>
+        [Required]
+        [Column("password_expiry")]
+        public DateTime PasswordExpiryDate { get; set; }
+
+        /// <summary>
+        /// List of user roles. One user can have more than one role.
+        /// </summary>
+        [Required]
+        [ForeignKey("UserId")]
+        public List<UserRole> Roles { get; set; } = new List<UserRole>();
     }
 }

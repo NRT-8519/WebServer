@@ -1,4 +1,5 @@
 ﻿{
+  //MariaDB Port: 63450
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,

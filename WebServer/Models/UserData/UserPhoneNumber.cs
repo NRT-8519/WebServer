@@ -2,19 +2,18 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WebServer.Models
+namespace WebServer.Models.UserData
 {
-    [Table("user_emails")]
+    [Table("user_phone_numbers")]
     [PrimaryKey("UserId")]
-    public class UserEmail
+    public class UserPhoneNumber
     {
         [Key]
         [Required]
         [Column("user_id")]
         public uint UserId { get; set; }
 
-        [Required]
-        [Column("email")]
-        public string Email { get; set; }
+        [Column("phone_number")]
+        public string PhoneNumber { get; set; }
     }
 }

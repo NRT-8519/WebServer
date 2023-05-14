@@ -2,11 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WebServer.Models
+namespace WebServer.Models.UserData
 {
-    [Table("users")]
+    [Table("user")]
     [PrimaryKey("Id")]
-    public class UserModel
+    public class User
     {
         /// <summary>
         /// User's ID

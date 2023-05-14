@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebServer.Authentication
 {
-    [Table("roles")]
+    [Table("role")]
     public class Role
     {
         [Key]

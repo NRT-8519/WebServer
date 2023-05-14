@@ -1,19 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebServer.Authentication;
 
-namespace WebServer.Models
+namespace WebServer.Models.UserData
 {
-    [Table("user_phone_numbers")]
+    [Table("user_roles")]
     [PrimaryKey("UserId")]
-    public class UserPhoneNumber
+    public class UserRole
     {
         [Key]
         [Required]
         [Column("user_id")]
         public uint UserId { get; set; }
 
-        [Column("phone_number")]
-        public string PhoneNumber { get; set; }
+        [Required]
+        [Column("role")]
+        public string Role { get; set; }
     }
 }

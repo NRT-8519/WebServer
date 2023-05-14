@@ -1,6 +1,6 @@
 ﻿namespace WebServer.Models
 {
-    public class RegisterModel
+    public class Register
     {
 
     }

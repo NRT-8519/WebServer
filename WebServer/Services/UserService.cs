@@ -1,61 +1,62 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Net;
-using WebServer.Models;
+using WebServer.Models.UserData;
+using WebServer.Services.Contexts;
 
 namespace WebServer.Services
 {
-    public sealed class UserService : IMariaDbService<UserModel>
+    public sealed class UserService : IDbService<User>
     {
-        private readonly UserContext userContext;
+        private readonly UserContext context;
 
-        public UserService(UserContext userContext)
+        public UserService(UserContext context)
         {
-            this.userContext = userContext;
+            this.context = context;
         }
 
-        public async Task<IEnumerable<UserModel>> FindAll()
+        public async Task<IEnumerable<User>> FindAll()
         {
-            return await userContext.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).ToListAsync();
+            return await context.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).ToListAsync();
         }
-        public async Task<IEnumerable<UserModel>> FindAllDisabled()
+        public async Task<IEnumerable<User>> FindAllDisabled()
         {
-            return await userContext.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).Where(u => u.IsDisabled).ToListAsync();
+            return await context.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).Where(u => u.IsDisabled).ToListAsync();
         }
-        public async Task<IEnumerable<UserModel>> FindAllExpired()
+        public async Task<IEnumerable<User>> FindAllExpired()
         {
-            return await userContext.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).Where(u => u.IsExpired).ToListAsync();
+            return await context.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).Where(u => u.IsExpired).ToListAsync();
         }
-        public async Task<UserModel> FindById(int id)
+        public async Task<User> FindById(int id)
         {
-            return await userContext.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.Id == id);
+            return await context.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.Id == id);
         }
-        public async Task<UserModel> FindByUUID(Guid UUID)
+        public async Task<User> FindByUUID(Guid UUID)
         {
-            return await userContext.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.UUID.Equals(UUID));
+            return await context.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.UUID.Equals(UUID));
         }
-        public async Task<UserModel> FindByUsername(string username)
+        public async Task<User> FindByUsername(string username)
         {
-            return await userContext.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.Username.Equals(username));
+            return await context.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.Username.Equals(username));
         }
-        public async Task<UserModel> FindByEmail(string email)
+        public async Task<User> FindByEmail(string email)
         {
-            return await userContext.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.Emails.Any(e => e.Email.Equals(email)));
+            return await context.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.Emails.Any(e => e.Email.Equals(email)));
         }
-        public async Task<UserModel> FindByPhoneNumber(string phoneNo)
+        public async Task<User> FindByPhoneNumber(string phoneNo)
         {
-            return await userContext.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.PhoneNumbers.Any(e => e.PhoneNumber.Equals(phoneNo)));
+            return await context.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.PhoneNumbers.Any(e => e.PhoneNumber.Equals(phoneNo)));
         }
-        public async Task<UserModel> FindByRole(string role)
+        public async Task<User> FindByRole(string role)
         {
-            return await userContext.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.Roles.Any(e => e.Role.Equals(role)));
+            return await context.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.Roles.Any(e => e.Role.Equals(role)));
         }
-        public async Task<int> Insert(UserModel model)
+        public async Task<int> Insert(User entity)
         {
             try
             {
-                userContext.Add(model);
-                return await userContext.SaveChangesAsync();
+                context.Add(entity);
+                return await context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException exception)
             {
@@ -63,12 +64,12 @@ namespace WebServer.Services
                 return 0;
             }
         }
-        public async Task<int> Update(UserModel model)
+        public async Task<int> Update(User entity)
         {
             try
             {
-                userContext.Update(model);
-                return await userContext.SaveChangesAsync();
+                context.Update(entity);
+                return await context.SaveChangesAsync();
             }
             catch(DbUpdateConcurrencyException exception)
             {
@@ -80,9 +81,9 @@ namespace WebServer.Services
         {
             try
             {
-                UserModel user = await FindById(id);
-                userContext.Users.Remove(user);
-                return await userContext.SaveChangesAsync();
+                User user = await FindById(id);
+                context.Users.Remove(user);
+                return await context.SaveChangesAsync();
             }
             catch (Exception exception)
             {
@@ -95,9 +96,9 @@ namespace WebServer.Services
         {
             try
             {
-                UserModel user = await FindByUUID(UUID);
-                userContext.Users.Remove(user);
-                return await userContext.SaveChangesAsync();
+                User user = await FindByUUID(UUID);
+                context.Users.Remove(user);
+                return await context.SaveChangesAsync();
             }
             catch (Exception exception)
             {

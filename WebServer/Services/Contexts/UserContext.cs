@@ -1,19 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WebServer.Models;
+using WebServer.Models.UserData;
 
-namespace WebServer.Services
+namespace WebServer.Services.Contexts
 {
     public partial class UserContext : DbContext
     {
         public UserContext(DbContextOptions<UserContext> options) : base(options) { }
 
-        public virtual DbSet<UserModel> Users { get; set; }
+        public virtual DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<UserModel>(entity =>
+            modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(u => u.Id);
                 entity.Property(u => u.UUID).IsRequired();

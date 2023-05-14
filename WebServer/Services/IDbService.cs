@@ -1,6 +1,6 @@
 ﻿namespace WebServer.Services
 {
-    public interface IMariaDbService<T>
+    public interface IDbService<T>
     {
         Task<IEnumerable<T>> FindAll();
         Task<T> FindById(int id);

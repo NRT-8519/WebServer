@@ -3,8 +3,9 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using WebServer.Models;
-using WebServer.Services;
 using Microsoft.EntityFrameworkCore;
+using WebServer.Services.Contexts;
+using WebServer.Models.UserData;
 
 namespace WebServer.Authentication
 {
@@ -19,9 +20,9 @@ namespace WebServer.Authentication
             this.configuration = configuration;
         }
 
-        public JWTToken Authenticate(LoginModel login)
+        public JWTToken Authenticate(Login login)
         {
-            UserModel user = userContext.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).FirstOrDefault(u => u.Username.Equals(login.Username) && u.Password.Equals(login.Password));
+            User user = userContext.Users.Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).FirstOrDefault(u => u.Username.Equals(login.Username) && u.Password.Equals(login.Password));
 
             if (user == null || user == default)
             {

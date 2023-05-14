@@ -2,7 +2,7 @@
 
 namespace WebServer.Models
 {
-    public class LoginModel
+    public class Login
     {
         [Required]
         public string Username { get; set; }

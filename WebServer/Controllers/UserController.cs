@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebServer.Authentication;
 using WebServer.Models;
+using WebServer.Models.UserData;
 using WebServer.Services;
 
 namespace WebServer.Controllers
@@ -12,34 +13,36 @@ namespace WebServer.Controllers
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> logger;
-        private readonly IMariaDbService<UserModel> mariaDbService;
+        private readonly IDbService<User> userService;
         private readonly ITokenService<JWTToken> tokenService;
 
-        public UserController(ILogger<UserController> logger, IMariaDbService<UserModel> mariaDbService, ITokenService<JWTToken> tokenService)
+        public UserController(ILogger<UserController> logger, IDbService<User> userService, ITokenService<JWTToken> tokenService)
         {
             this.logger = logger;
-            this.mariaDbService = mariaDbService;
+            this.userService = userService;
             this.tokenService = tokenService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserModel>>> GetAll()
+        [HttpGet("/all")]
+        public async Task<ActionResult<IEnumerable<User>>> GetAll()
         {
-            var result = await mariaDbService.FindAll();
+            var result = await userService.FindAll();
             if (result.Any()) 
             {
+                logger.LogInformation("Fetched all users.");
                 return Ok(result);
             }
             else
             {
+                logger.LogInformation("User database empty.");
                 return NoContent();
             }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserModel>> Get(int id)
+        public async Task<ActionResult<User>> Get(int id)
         {
-            var user = await mariaDbService.FindById(id);
+            var user = await userService.FindById(id);
             if (user != default) 
             {
                 return Ok(user);
@@ -51,9 +54,9 @@ namespace WebServer.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<ActionResult<UserModel>> Add([FromBody] UserModel model)
+        public async Task<ActionResult<User>> Add([FromBody] User model)
         {
-            var user = await mariaDbService.Insert(model);
+            var user = await userService.Insert(model);
 
             if (user != 0)
             {
@@ -66,9 +69,9 @@ namespace WebServer.Controllers
         }
 
         [HttpPut("edit")]
-        public async Task<ActionResult<UserModel>> Edit([FromBody] UserModel model)
+        public async Task<ActionResult<User>> Edit([FromBody] User model)
         {
-            var user = await mariaDbService.Update(model);
+            var user = await userService.Update(model);
 
             if (user != 0)
             {
@@ -81,9 +84,9 @@ namespace WebServer.Controllers
         }
 
         [HttpDelete("removeById/{id}")]
-        public async Task<ActionResult<UserModel>> RemoveById(int id)
+        public async Task<ActionResult<User>> RemoveById(int id)
         {
-            var user = await mariaDbService.DeleteById(id);
+            var user = await userService.DeleteById(id);
 
             if (user != 0)
             {
@@ -96,9 +99,9 @@ namespace WebServer.Controllers
         }
 
         [HttpDelete("removeByUUID/{UUID}")]
-        public async Task<ActionResult<UserModel>> RemoveByUUID(Guid UUID)
+        public async Task<ActionResult<User>> RemoveByUUID(Guid UUID)
         {
-            var user = await mariaDbService.DeleteByUUID(UUID);
+            var user = await userService.DeleteByUUID(UUID);
 
             if (user != 0)
             {
@@ -112,7 +115,7 @@ namespace WebServer.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate(LoginModel user)
+        public IActionResult Authenticate(Login user)
         {
             var token = tokenService.Authenticate(user);
             if (token == null)

@@ -6,8 +6,9 @@ using Microsoft.OpenApi.Models;
 using System.Security.Cryptography.Xml;
 using System.Text;
 using WebServer.Authentication;
-using WebServer.Models;
+using WebServer.Models.UserData;
 using WebServer.Services;
+using WebServer.Services.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,10 +16,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContextPool<UserContext>(options =>
 {
-    string ConnectionString = builder.Configuration["ConnectionStrings:MariaDbConnectionString"];
+    string ConnectionString = builder.Configuration["ConnectionStrings:UserDataConnectionString"];
     options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
 });
-builder.Services.AddScoped<IMariaDbService<UserModel>, UserService>();
+builder.Services.AddScoped<IDbService<User>, UserService>();
 builder.Services.AddScoped<ITokenService<JWTToken>, JWTManager>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

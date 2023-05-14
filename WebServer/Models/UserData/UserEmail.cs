@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using WebServer.Authentication;
 
-namespace WebServer.Models
+namespace WebServer.Models.UserData
 {
-    [Table("user_roles")]
+    [Table("user_emails")]
     [PrimaryKey("UserId")]
-    public class UserRole
+    public class UserEmail
     {
         [Key]
         [Required]
@@ -15,7 +14,7 @@ namespace WebServer.Models
         public uint UserId { get; set; }
 
         [Required]
-        [Column("role")]
-        public string Role { get; set; }
+        [Column("email")]
+        public string Email { get; set; }
     }
 }

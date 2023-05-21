@@ -77,6 +77,21 @@ namespace WebServer.Services
                 return 0;
             }
         }
+
+        public async Task<int> Delete(User entity)
+        {
+            try
+            {
+                context.Remove(entity);
+                return await context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException exception)
+            {
+                Console.WriteLine(exception.ToString());
+                return 0;
+            }
+        }
+
         public async Task<int> DeleteById(int id)
         {
             try

@@ -11,6 +11,21 @@ namespace WebServer.Services
         {
             this.context = context;
         }
+
+        public async Task<int> Delete(Company company)
+        {
+            try
+            {
+                context.Companies.Remove(company);
+                return await context.SaveChangesAsync();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.ToString());
+                return 0;
+            }
+        }
+
         public async Task<int> DeleteById(int id)
         {
             try

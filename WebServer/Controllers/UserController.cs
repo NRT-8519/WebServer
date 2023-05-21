@@ -23,7 +23,7 @@ namespace WebServer.Controllers
             this.tokenService = tokenService;
         }
 
-        [HttpGet("/all")]
+        [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<User>>> GetAll()
         {
             var result = await userService.FindAll();
@@ -40,7 +40,7 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> Get(int id)
+        public async Task<ActionResult<User>> GetById(int id)
         {
             var user = await userService.FindById(id);
             if (user != default) 
@@ -83,7 +83,7 @@ namespace WebServer.Controllers
             }
         }
 
-        [HttpDelete("removeById/{id}")]
+        [HttpDelete("remove/{id}")]
         public async Task<ActionResult<User>> RemoveById(int id)
         {
             var user = await userService.DeleteById(id);
@@ -98,7 +98,7 @@ namespace WebServer.Controllers
             }
         }
 
-        [HttpDelete("removeByUUID/{UUID}")]
+        [HttpDelete("remove/{UUID}")]
         public async Task<ActionResult<User>> RemoveByUUID(Guid UUID)
         {
             var user = await userService.DeleteByUUID(UUID);

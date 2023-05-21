@@ -10,7 +10,7 @@ namespace WebServer.Controllers
     [Authorize]
     [Route("api/users")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : Controller<User>
     {
         private readonly ILogger<UserController> logger;
         private readonly IDbService<User> userService;
@@ -24,7 +24,7 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<User>>> GetAll()
+        public override async Task<ActionResult<IEnumerable<User>>> GetAll()
         {
             var result = await userService.FindAll();
             if (result.Any()) 
@@ -40,7 +40,7 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetById(int id)
+        public override async Task<ActionResult<User>> GetById(int id)
         {
             var user = await userService.FindById(id);
             if (user != default) 
@@ -53,8 +53,22 @@ namespace WebServer.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public override async Task<ActionResult<User>> GetByUUID(Guid UUID)
+        {
+            var user = await userService.FindByUUID(UUID);
+            if (user != default)
+            {
+                return Ok(user);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpPost("add")]
-        public async Task<ActionResult<User>> Add([FromBody] User model)
+        public override async Task<ActionResult<User>> Add([FromBody] User model)
         {
             var user = await userService.Insert(model);
 
@@ -69,7 +83,7 @@ namespace WebServer.Controllers
         }
 
         [HttpPut("edit")]
-        public async Task<ActionResult<User>> Edit([FromBody] User model)
+        public override async Task<ActionResult<User>> Edit([FromBody] User model)
         {
             var user = await userService.Update(model);
 
@@ -83,8 +97,23 @@ namespace WebServer.Controllers
             }
         }
 
+        [HttpDelete("remove")]
+        public override async Task<ActionResult<User>> Remove([FromBody] User model)
+        {
+            var user = await userService.Delete(model);
+
+            if (user != 0)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpDelete("remove/{id}")]
-        public async Task<ActionResult<User>> RemoveById(int id)
+        public override async Task<ActionResult<User>> RemoveById(int id)
         {
             var user = await userService.DeleteById(id);
 
@@ -99,7 +128,7 @@ namespace WebServer.Controllers
         }
 
         [HttpDelete("remove/{UUID}")]
-        public async Task<ActionResult<User>> RemoveByUUID(Guid UUID)
+        public override async Task<ActionResult<User>> RemoveByUUID(Guid UUID)
         {
             var user = await userService.DeleteByUUID(UUID);
 

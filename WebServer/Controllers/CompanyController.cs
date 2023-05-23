@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebServer.Models;
+using WebServer.Models.MedicineData;
 using WebServer.Services;
 
 namespace WebServer.Controllers

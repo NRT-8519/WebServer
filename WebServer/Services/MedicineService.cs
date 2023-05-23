@@ -1,25 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebServer.Models.MedicineData;
+using WebServer.Models.UserData;
 using WebServer.Services.Contexts;
 
 namespace WebServer.Services
 {
-    public class CompanyService : IDbService<Company>
+    public class MedicineService : IDbService<Medicine>
     {
-        private readonly CompanyContext context;
-        public CompanyService(CompanyContext context) 
+        private readonly MedicineContext context;
+
+        public MedicineService(MedicineContext context)
         {
             this.context = context;
         }
 
-        public async Task<int> Delete(Company company)
+        public async Task<int> Delete(Medicine entity)
         {
             try
             {
-                context.Companies.Remove(company);
+                context.Remove(entity);
                 return await context.SaveChangesAsync();
             }
-            catch (Exception exception)
+            catch (DbUpdateConcurrencyException exception)
             {
                 Console.WriteLine(exception.ToString());
                 return 0;
@@ -30,8 +32,8 @@ namespace WebServer.Services
         {
             try
             {
-                Company company = await FindById(id);
-                context.Companies.Remove(company);
+                Medicine medicine = await FindById(id);
+                context.Remove(medicine);
                 return await context.SaveChangesAsync();
             }
             catch (Exception exception)
@@ -45,8 +47,8 @@ namespace WebServer.Services
         {
             try
             {
-                Company company = await FindByUUID(UUID);
-                context.Companies.Remove(company);
+                Medicine medicine = await FindByUUID(UUID);
+                context.Remove(medicine);
                 return await context.SaveChangesAsync();
             }
             catch (Exception exception)
@@ -56,22 +58,22 @@ namespace WebServer.Services
             }
         }
 
-        public async Task<IEnumerable<Company>> FindAll()
+        public async Task<IEnumerable<Medicine>> FindAll()
         {
-            return await context.Companies.Include(c => c.Medicines).ToListAsync();
+            return await context.Medicines.Include(m => m.Company).Include(m => m.Issuer).Include(m => m.Clearance).ToListAsync();
         }
 
-        public async Task<Company> FindById(int id)
+        public async Task<Medicine> FindById(int id)
         {
-            return await context.Companies.Include(c => c.Medicines).SingleOrDefaultAsync(c => c.Id == id);
+            return await context.Medicines.Include(m => m.Company).Include(m => m.Issuer).Include(m => m.Clearance).SingleOrDefaultAsync(m => m.Id == id);
         }
 
-        public async Task<Company> FindByUUID(Guid UUID)
+        public async Task<Medicine> FindByUUID(Guid UUID)
         {
-            return await context.Companies.Include(c => c.Medicines).SingleOrDefaultAsync(c => c.UUID.Equals(UUID));
+            return await context.Medicines.Include(m => m.Company).Include(m => m.Issuer).Include(m => m.Clearance).SingleOrDefaultAsync(m => m.UUID.Equals(UUID));
         }
 
-        public async Task<int> Insert(Company entity)
+        public async Task<int> Insert(Medicine entity)
         {
             try
             {
@@ -85,7 +87,7 @@ namespace WebServer.Services
             }
         }
 
-        public async Task<int> Update(Company entity)
+        public async Task<int> Update(Medicine entity)
         {
             try
             {

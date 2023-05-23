@@ -53,7 +53,7 @@ namespace WebServer.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{UUID}")]
         public override async Task<ActionResult<User>> GetByUUID(Guid UUID)
         {
             var user = await userService.FindByUUID(UUID);

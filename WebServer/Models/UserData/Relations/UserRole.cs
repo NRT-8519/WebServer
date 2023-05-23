@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebServer.Authentication;
 
-namespace WebServer.Models.UserData
+namespace WebServer.Models.UserData.Relations
 {
     [Table("user_roles")]
     [PrimaryKey("UserId")]

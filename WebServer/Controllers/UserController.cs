@@ -12,21 +12,17 @@ namespace WebServer.Controllers
     [ApiController]
     public class UserController : Controller<User>
     {
-        private readonly ILogger<UserController> logger;
-        private readonly IDbService<User> userService;
         private readonly ITokenService<JWTToken> tokenService;
 
-        public UserController(ILogger<UserController> logger, IDbService<User> userService, ITokenService<JWTToken> tokenService)
+        public UserController(ILogger<UserController> logger, IDbService<User> service, ITokenService<JWTToken> tokenService) : base(logger, service)
         {
-            this.logger = logger;
-            this.userService = userService;
             this.tokenService = tokenService;
         }
 
         [HttpGet("all")]
         public override async Task<ActionResult<IEnumerable<User>>> GetAll()
         {
-            var result = await userService.FindAll();
+            var result = await service.FindAll();
             if (result.Any()) 
             {
                 logger.LogInformation("Fetched all users.");
@@ -42,7 +38,7 @@ namespace WebServer.Controllers
         [HttpGet("{id}")]
         public override async Task<ActionResult<User>> GetById(int id)
         {
-            var user = await userService.FindById(id);
+            var user = await service.FindById(id);
             if (user != default) 
             {
                 return Ok(user);
@@ -56,7 +52,7 @@ namespace WebServer.Controllers
         [HttpGet("{UUID}")]
         public override async Task<ActionResult<User>> GetByUUID(Guid UUID)
         {
-            var user = await userService.FindByUUID(UUID);
+            var user = await service.FindByUUID(UUID);
             if (user != default)
             {
                 return Ok(user);
@@ -70,7 +66,7 @@ namespace WebServer.Controllers
         [HttpPost("add")]
         public override async Task<ActionResult<User>> Add([FromBody] User model)
         {
-            var user = await userService.Insert(model);
+            var user = await service.Insert(model);
 
             if (user != 0)
             {
@@ -85,7 +81,7 @@ namespace WebServer.Controllers
         [HttpPut("edit")]
         public override async Task<ActionResult<User>> Edit([FromBody] User model)
         {
-            var user = await userService.Update(model);
+            var user = await service.Update(model);
 
             if (user != 0)
             {
@@ -100,7 +96,7 @@ namespace WebServer.Controllers
         [HttpDelete("remove")]
         public override async Task<ActionResult<User>> Remove([FromBody] User model)
         {
-            var user = await userService.Delete(model);
+            var user = await service.Delete(model);
 
             if (user != 0)
             {
@@ -115,7 +111,7 @@ namespace WebServer.Controllers
         [HttpDelete("remove/{id}")]
         public override async Task<ActionResult<User>> RemoveById(int id)
         {
-            var user = await userService.DeleteById(id);
+            var user = await service.DeleteById(id);
 
             if (user != 0)
             {
@@ -130,7 +126,7 @@ namespace WebServer.Controllers
         [HttpDelete("remove/{UUID}")]
         public override async Task<ActionResult<User>> RemoveByUUID(Guid UUID)
         {
-            var user = await userService.DeleteByUUID(UUID);
+            var user = await service.DeleteByUUID(UUID);
 
             if (user != 0)
             {

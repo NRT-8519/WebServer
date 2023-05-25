@@ -10,19 +10,15 @@ namespace WebServer.Controllers
     [Route("api/company")]
     public class CompanyController : Controller<Company>
     {
-        private readonly ILogger<CompanyController> logger;
-        private readonly IDbService<Company> companyService;
 
-        public CompanyController(ILogger<CompanyController> logger, IDbService<Company> companyService)
+        public CompanyController(ILogger<CompanyController> logger, IDbService<Company> service) : base(logger, service)
         {
-            this.logger = logger;
-            this.companyService = companyService;
         }
 
         [HttpGet("all")]
         public override async Task<ActionResult<IEnumerable<Company>>> GetAll()
         {
-            var result = await companyService.FindAll();
+            var result = await service.FindAll();
 
             return result.Any() ? Ok(result) : NoContent();
         }
@@ -30,7 +26,7 @@ namespace WebServer.Controllers
         [HttpGet("{id}")]
         public override async Task<ActionResult<Company>> GetById(int id)
         {
-            var result = await companyService.FindById(id);
+            var result = await service.FindById(id);
 
             return result != default ? Ok(result) : NotFound();
         }
@@ -38,7 +34,7 @@ namespace WebServer.Controllers
         [HttpGet("{UUID}")]
         public override async Task<ActionResult<Company>> GetByUUID(Guid UUID)
         {
-            var result = await companyService.FindByUUID(UUID);
+            var result = await service.FindByUUID(UUID);
 
             return result != default ? Ok(result) : NotFound();
 
@@ -47,7 +43,7 @@ namespace WebServer.Controllers
         [HttpPost("add")]
         public override async Task<ActionResult<Company>> Add([FromBody] Company company)
         {
-            var result = await companyService.Insert(company);
+            var result = await service.Insert(company);
 
             return result != 0 ? Ok(result) : BadRequest();
         }
@@ -55,7 +51,7 @@ namespace WebServer.Controllers
         [HttpPut("edit")]
         public override async Task<ActionResult<Company>> Edit([FromBody] Company company)
         {
-            var result = await companyService.Update(company);
+            var result = await service.Update(company);
 
             return result != 0 ? Ok(result) : BadRequest();
         }
@@ -63,7 +59,7 @@ namespace WebServer.Controllers
         [HttpDelete("remove")]
         public override async Task<ActionResult<Company>> Remove(Company company)
         {
-            var result = await companyService.Delete(company);
+            var result = await service.Delete(company);
 
             return result != 0 ? Ok() : BadRequest();
         }
@@ -71,7 +67,7 @@ namespace WebServer.Controllers
         [HttpDelete("remove/{id}")]
         public override async Task<ActionResult<Company>> RemoveById(int id)
         {
-            var result = await companyService.DeleteById(id);
+            var result = await service.DeleteById(id);
 
             return result != 0 ? Ok() : BadRequest();
         }
@@ -79,7 +75,7 @@ namespace WebServer.Controllers
         [HttpDelete("remove/{UUID}")]
         public override async Task<ActionResult<Company>> RemoveByUUID(Guid UUID)
         {
-            var result = await companyService.DeleteByUUID(UUID);
+            var result = await service.DeleteByUUID(UUID);
 
             return result != 0 ? Ok() : BadRequest();
         }

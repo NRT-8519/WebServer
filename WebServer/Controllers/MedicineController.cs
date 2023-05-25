@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebServer.Models.MedicineData;
+using WebServer.Services;
 
 namespace WebServer.Controllers
 {
@@ -9,6 +10,7 @@ namespace WebServer.Controllers
     [ApiController]
     public class MedicineController : Controller<Medicine>
     {
+        public MedicineController(ILogger logger, IDbService<Medicine> medicineService) : base(logger, medicineService) { }
 
         [HttpPost("add")]
         public override async Task<ActionResult<Medicine>> Add([FromBody] Medicine entity)

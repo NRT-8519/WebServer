@@ -6,7 +6,14 @@ namespace WebServer.Controllers
 {
     public abstract class Controller<T> : ControllerBase
     {
-        public Controller() { }
+        protected readonly ILogger logger;
+        protected readonly IDbService<T> service;
+
+        public Controller(ILogger logger, IDbService<T> service) 
+        {
+            this.logger = logger;
+            this.service = service;
+        }
 
         public abstract Task<ActionResult<IEnumerable<T>>> GetAll(); 
         public abstract Task<ActionResult<T>> GetById(int id);

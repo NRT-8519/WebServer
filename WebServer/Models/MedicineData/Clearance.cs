@@ -29,5 +29,12 @@ namespace WebServer.Models.MedicineData
         [Column("expiry_date")]
         [Required]
         public DateOnly ExpiryDate { get; set; }
+
+        [Required]
+        public uint MedicineId { get; set; }
+
+        [ForeignKey("MedicineId")]
+        [Required]
+        public Medicine Medicine { get; set; }
     }
 }

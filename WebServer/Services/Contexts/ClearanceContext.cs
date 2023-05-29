@@ -20,6 +20,7 @@ namespace WebServer.Services.Contexts
                 entity.Property(c => c.ClearanceNumber).IsRequired();
                 entity.Property(c => c.BeginDate).IsRequired();
                 entity.Property(c => c.ExpiryDate).IsRequired();
+                entity.HasOne(c => c.Medicine).WithOne(m => m.Clearance).HasForeignKey((Medicine m) => m.ClearanceId).IsRequired();
             });
         }
     }

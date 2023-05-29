@@ -65,12 +65,12 @@ namespace WebServer.Services
 
         public async Task<Issuer> FindById(int id)
         {
-            return await context.Issuers.SingleOrDefaultAsync(i => i.Id == id);
+            return await context.Issuers.Include(i => i.Medicines).SingleOrDefaultAsync(i => i.Id == id);
         }
 
         public async Task<Issuer> FindByUUID(Guid UUID)
         {
-            return await context.Issuers.SingleOrDefaultAsync(i => i.UUID.Equals(UUID));
+            return await context.Issuers.Include(i => i.Medicines).SingleOrDefaultAsync(i => i.UUID.Equals(UUID));
         }
 
         public async Task<int> Insert(Issuer entity)

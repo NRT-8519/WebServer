@@ -19,7 +19,7 @@ namespace WebServer.Services.Contexts
                 entity.Property(c => c.UUID).IsRequired();
                 entity.Property(c => c.Name).IsRequired();
                 entity.Property(c => c.Country).IsRequired();
-                entity.HasMany(c => c.Medicines).WithOne().HasForeignKey(m => m.CompanyId).IsRequired();
+                entity.HasMany(c => c.Medicines).WithOne(m => m.Company).HasForeignKey(m => m.CompanyId).IsRequired();
             });
         }
     }

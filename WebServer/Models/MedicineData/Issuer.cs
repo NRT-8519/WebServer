@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
-using WebServer.Models.MedicineData.Relations;
 
 namespace WebServer.Models.MedicineData
 {
@@ -35,6 +34,6 @@ namespace WebServer.Models.MedicineData
 
         [ForeignKey("IssuerId")]
         [Required]
-        public List<MedicineIssuer> Medicines { get; set; }
+        public ICollection<Medicine> Medicines { get; set; } = new List<Medicine>();
     }
 }

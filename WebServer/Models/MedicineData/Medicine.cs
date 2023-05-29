@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using WebServer.Models.MedicineData.Relations;
 
 namespace WebServer.Models.MedicineData
 {
@@ -54,15 +53,22 @@ namespace WebServer.Models.MedicineData
         public EnumPrescriptionType PrescriptionType { get; set; }
 
         [Required]
-        [ForeignKey("MedicineId")]
-        public MedicineCompany Company { get; set; }
+        public uint CompanyId { get; set; }
 
         [Required]
-        [ForeignKey("MedicineId")]
-        public MedicineIssuer Issuer { get; set; }
+        [ForeignKey("CompanyId")]
+        public Company Company { get; set; }
 
         [Required]
+        public uint IssuerId { get; set; }
+        [Required]
         [ForeignKey("MedicineId")]
-        public MedicineClearance Clearance { get; set; }
+        public Issuer Issuer { get; set; }
+
+        [Required]
+        public uint ClearanceId { get; set; }
+        [Required]
+        [ForeignKey("MedicineId")]
+        public Clearance Clearance { get; set; }
     }
 }

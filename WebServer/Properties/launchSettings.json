@@ -10,7 +10,7 @@
     }
   },
   "profiles": {
-    "HTTP": {
+    "Run HTTP Server": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
@@ -20,7 +20,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "HTTPS": {
+    "Run HTTPS Server": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
@@ -30,7 +30,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "IIS Express": {
+    "Run IIS Express Server": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "launchUrl": "swagger",

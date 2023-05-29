@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebServer.Models.MedicineData;
-using WebServer.Models.MedicineData.Relations;
 
 namespace WebServer.Services.Contexts
 {
@@ -27,9 +26,9 @@ namespace WebServer.Services.Contexts
                 entity.Property(m => m.UniqueClassification);
                 entity.Property(m => m.INN).IsRequired();
                 entity.Property(m => m.PrescriptionType).IsRequired();
-                entity.HasOne(m => m.Company).WithOne().HasForeignKey((MedicineCompany c) => c.MedicineId).IsRequired();
-                entity.HasOne(m => m.Issuer).WithOne().HasForeignKey((MedicineIssuer i) => i.MedicineId).IsRequired();
-                entity.HasOne(m => m.Clearance).WithOne().HasForeignKey((MedicineClearance c) => c.MedicineId).IsRequired();
+                entity.HasOne(m => m.Company).WithMany(c => c.Medicines).HasForeignKey(m => m.CompanyId).IsRequired();
+                entity.HasOne(m => m.Issuer).WithMany(c => c.Medicines).HasForeignKey(m => m.IssuerId).IsRequired();
+                entity.HasOne(m => m.Clearance).WithOne(c => c.Medicine).HasForeignKey((Medicine m) => m.ClearanceId).IsRequired();
             });
         }
     }

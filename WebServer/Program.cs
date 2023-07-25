@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Security.Cryptography.Xml;
@@ -45,6 +46,14 @@ builder.Services.AddScoped<ITokenService<JWTToken>, JWTManager>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+        builder.AllowAnyOrigin()
+       .AllowAnyMethod()
+       .AllowAnyHeader());
+});
 
 builder.Services.AddAuthentication(options =>
 {
@@ -119,6 +128,6 @@ app.UseAuthentication();
 app.UseRouting();
 app.UseAuthorization();
 
-app.UseCors();
+app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:7241").AllowCredentials());
 app.MapControllers();
 app.Run();

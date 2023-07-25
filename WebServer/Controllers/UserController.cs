@@ -35,7 +35,7 @@ namespace WebServer.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public override async Task<ActionResult<User>> GetById(int id)
         {
             var user = await service.FindById(id);

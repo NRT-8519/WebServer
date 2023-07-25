@@ -23,7 +23,7 @@ namespace WebServer.Controllers
             return result.Any() ? Ok(result) : NoContent();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public override async Task<ActionResult<Company>> GetById(int id)
         {
             var result = await service.FindById(id);

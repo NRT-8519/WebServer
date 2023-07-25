@@ -58,17 +58,17 @@ namespace WebServer.Services
 
         public async Task<IEnumerable<Company>> FindAll()
         {
-            return await context.Companies.Include(c => c.Medicines).ToListAsync();
+            return await context.Companies.ToListAsync();
         }
 
         public async Task<Company> FindById(int id)
         {
-            return await context.Companies.Include(c => c.Medicines).SingleOrDefaultAsync(c => c.Id == id);
+            return await context.Companies.SingleOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<Company> FindByUUID(Guid UUID)
         {
-            return await context.Companies.Include(c => c.Medicines).SingleOrDefaultAsync(c => c.UUID.Equals(UUID));
+            return await context.Companies.SingleOrDefaultAsync(c => c.UUID.Equals(UUID));
         }
 
         public async Task<int> Insert(Company entity)

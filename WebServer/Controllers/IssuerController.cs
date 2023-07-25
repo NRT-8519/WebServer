@@ -6,7 +6,7 @@ using WebServer.Services;
 namespace WebServer.Controllers
 {
     [Authorize]
-    [Route("api/s")]
+    [Route("api/issuer")]
     [ApiController]
     public class IssuerController : Controller<Issuer>
     {

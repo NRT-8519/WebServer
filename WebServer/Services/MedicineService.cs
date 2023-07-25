@@ -60,17 +60,17 @@ namespace WebServer.Services
 
         public async Task<IEnumerable<Medicine>> FindAll()
         {
-            return await context.Medicines.Include(m => m.Company).Include(m => m.Issuer).Include(m => m.Clearance).ToListAsync();
+            return await context.Medicines.Include(m => m.Clearances).Include(m => m.Company).Include(m => m.Issuer).ToListAsync();
         }
 
         public async Task<Medicine> FindById(int id)
         {
-            return await context.Medicines.Include(m => m.Company).Include(m => m.Issuer).Include(m => m.Clearance).SingleOrDefaultAsync(m => m.Id == id);
+            return await context.Medicines.Include(m => m.Clearances).Include(m => m.Company).Include(m => m.Issuer).SingleOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<Medicine> FindByUUID(Guid UUID)
         {
-            return await context.Medicines.Include(m => m.Company).Include(m => m.Issuer).Include(m => m.Clearance).SingleOrDefaultAsync(m => m.UUID.Equals(UUID));
+            return await context.Medicines.Include(m => m.Clearances).Include(m => m.Company).Include(m => m.Issuer).SingleOrDefaultAsync(m => m.UUID.Equals(UUID));
         }
 
         public async Task<int> Insert(Medicine entity)

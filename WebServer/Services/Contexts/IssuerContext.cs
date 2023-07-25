@@ -20,7 +20,6 @@ namespace WebServer.Services.Contexts
                 entity.Property(i => i.Name).IsRequired();
                 entity.Property(i => i.City).IsRequired();
                 entity.Property(i => i.Area).IsRequired();
-                entity.HasMany(i => i.Medicines).WithOne(m => m.Issuer).HasForeignKey(m => m.IssuerId).IsRequired();
             });
         }
     }

@@ -5,18 +5,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace WebServer.Models.MedicineData
 {
     [Table("clearance")]
-    [PrimaryKey("id")]
+    [PrimaryKey("MedicineId")]
     public class Clearance
     {
-        [Column("id")]
+        [Column("medicine_id")]
         [Key]
         [Required]
-        public uint? Id { get; set; }
-
-        [Column("uuid")]
-        [Key]
-        [Required]
-        public Guid? UUID { get; set; }
+        public uint MedicineId { get; set; }
 
         [Column("clearance_number")]
         [Required]
@@ -29,12 +24,5 @@ namespace WebServer.Models.MedicineData
         [Column("expiry_date")]
         [Required]
         public DateOnly ExpiryDate { get; set; }
-
-        [Required]
-        public uint MedicineId { get; set; }
-
-        [ForeignKey("MedicineId")]
-        [Required]
-        public Medicine Medicine { get; set; }
     }
 }

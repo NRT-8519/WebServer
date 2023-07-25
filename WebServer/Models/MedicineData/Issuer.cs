@@ -30,10 +30,5 @@ namespace WebServer.Models.MedicineData
         [Column("area")]
         [Required]
         public string Area { get; set; }
-
-
-        [ForeignKey("IssuerId")]
-        [Required]
-        public ICollection<Medicine> Medicines { get; set; } = new List<Medicine>();
     }
 }

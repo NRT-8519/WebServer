@@ -23,7 +23,7 @@ namespace WebServer.Models.MedicineData
 
         [Column("type")]
         [Required]
-        public EnumMedicineType Type { get; set; }
+        public string Type { get; set; }
 
         [Column("dosage")]
         [Required]
@@ -50,8 +50,9 @@ namespace WebServer.Models.MedicineData
 
         [Column("prescription_type")]
         [Required]
-        public EnumPrescriptionType PrescriptionType { get; set; }
+        public string PrescriptionType { get; set; }
 
+        [Column("company_id")]
         [Required]
         public uint CompanyId { get; set; }
 
@@ -59,16 +60,15 @@ namespace WebServer.Models.MedicineData
         [ForeignKey("CompanyId")]
         public Company Company { get; set; }
 
+        [Column("issuer_id")]
         [Required]
         public uint IssuerId { get; set; }
         [Required]
-        [ForeignKey("MedicineId")]
+        [ForeignKey("IssuerId")]
         public Issuer Issuer { get; set; }
 
         [Required]
-        public uint ClearanceId { get; set; }
-        [Required]
         [ForeignKey("MedicineId")]
-        public Clearance Clearance { get; set; }
+        public List<Clearance> Clearances { get; set; } = new List<Clearance>();
     }
 }

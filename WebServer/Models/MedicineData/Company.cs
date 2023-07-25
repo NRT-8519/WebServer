@@ -34,9 +34,5 @@ namespace WebServer.Models.MedicineData
         [Column("address")]
         [Required]
         public string Address { get; set; }
-
-        [ForeignKey("CompanyId")]
-        [Required]
-        public ICollection<Medicine> Medicines { get; set; } = new List<Medicine>();
     }
 }

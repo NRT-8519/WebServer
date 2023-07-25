@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using System.Security.Cryptography.Xml;
 using System.Text;
 using WebServer.Authentication;
+using WebServer.Models.MedicineData;
 using WebServer.Models.UserData;
 using WebServer.Services;
 using WebServer.Services.Contexts;
@@ -19,7 +20,27 @@ builder.Services.AddDbContextPool<UserContext>(options =>
     string ConnectionString = builder.Configuration["ConnectionStrings:UserDataConnectionString"];
     options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
 });
+builder.Services.AddDbContextPool<CompanyContext>(options =>
+{
+    string ConnectionString = builder.Configuration["ConnectionStrings:MedicineDbConnectionString"];
+    options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
+});
+builder.Services.AddDbContextPool<IssuerContext>(options =>
+{
+    string ConnectionString = builder.Configuration["ConnectionStrings:MedicineDbConnectionString"];
+    options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
+});
+builder.Services.AddDbContextPool<MedicineContext>(options =>
+{
+    string ConnectionString = builder.Configuration["ConnectionStrings:MedicineDbConnectionString"];
+    options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
+});
+
 builder.Services.AddScoped<IDbService<User>, UserService>();
+builder.Services.AddScoped<IDbService<Company>, CompanyService>();
+builder.Services.AddScoped<IDbService<Issuer>, IssuerService>();
+builder.Services.AddScoped<IDbService<Medicine>, MedicineService>();
+
 builder.Services.AddScoped<ITokenService<JWTToken>, JWTManager>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

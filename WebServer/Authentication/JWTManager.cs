@@ -26,7 +26,7 @@ namespace WebServer.Authentication
 
             if (user == null || user == default)
             {
-                return null;
+                return new JWTToken { Token = "", IsAuthSuccessful = false, ErrorMessage = "Invalid credentials" };
             }
             else
             {
@@ -42,13 +42,13 @@ namespace WebServer.Authentication
                     new Claim(JwtRegisteredClaimNames.Aud, configuration["Jwt:Audience"]),
                     new Claim(JwtRegisteredClaimNames.Iss, configuration["Jwt:Issuer"])
                     }),
-                    Expires = DateTime.UtcNow.AddMinutes(5),
+                    Expires = DateTime.UtcNow.AddMinutes(30),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
                 };
 
                 var token = tokenHandler.CreateToken(tokenDescriptor);
 
-                return new JWTToken { Token = tokenHandler.WriteToken(token) };
+                return new JWTToken { Token = tokenHandler.WriteToken(token), IsAuthSuccessful = true };
             }
         }
     }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebServer.Authentication;
 using WebServer.Models;
+using WebServer.Models.ClinicData.Entities;
 using WebServer.Models.UserData;
 using WebServer.Services;
 
@@ -131,6 +132,154 @@ namespace WebServer.Controllers
             if (user != 0)
             {
                 return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("doctors/all")]
+        public async Task<ActionResult<IEnumerable<Doctor>>> GetAllDoctors()
+        {
+            var result = await ((UserService)service).FindAllDoctors();
+            if (result.Any())
+            {
+                logger.LogInformation("Fetched all doctors.");
+                return Ok(result);
+            }
+            else
+            {
+                logger.LogInformation("Doctors database empty.");
+                return NoContent();
+            }
+        }
+
+        [HttpGet("doctors/{id:int}")]
+        public async Task<ActionResult<Doctor>> GetDoctorById(int id)
+        {
+            var doctor = await ((UserService)service).FindDoctorById(id);
+            if (doctor != default)
+            {
+                return Ok(doctor);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet("doctors/{UUID}")]
+        public async Task<ActionResult<Doctor>> GetDoctorByUUID(Guid UUID)
+        {
+            var doctor = await ((UserService)service).FindDoctorByUUID(UUID);
+            if (doctor != default)
+            {
+                return Ok(doctor);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost("doctors/add")]
+        public async Task<ActionResult<Doctor>> AddDoctor([FromBody] Doctor model)
+        {
+            var user = await ((UserService)service).InsertDoctor(model);
+
+            if (user != 0)
+            {
+                return Ok(user);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("doctors/edit")]
+        public async Task<ActionResult<Doctor>> EditDoctor([FromBody] Doctor model)
+        {
+            var user = await ((UserService)service).UpdateDoctor(model);
+
+            if (user != 0)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("patients/all")]
+        public async Task<ActionResult<IEnumerable<Doctor>>> GetAllPatients()
+        {
+            var result = await ((UserService)service).FindAllPatients();
+            if (result.Any())
+            {
+                logger.LogInformation("Fetched all patients.");
+                return Ok(result);
+            }
+            else
+            {
+                logger.LogInformation("Patients database empty.");
+                return NoContent();
+            }
+        }
+
+        [HttpGet("patients/{id:int}")]
+        public async Task<ActionResult<Patient>> GetPatientById(int id)
+        {
+            var patient = await ((UserService)service).FindPatientById(id);
+            if (patient != default)
+            {
+                return Ok(patient);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet("patients/{UUID}")]
+        public async Task<ActionResult<Patient>> GetPatientByUUID(Guid UUID)
+        {
+            var patient = await ((UserService)service).FindPatientByUUID(UUID);
+            if (patient != default)
+            {
+                return Ok(patient);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost("patients/add")]
+        public async Task<ActionResult<Patient>> AddPatient([FromBody] Patient model)
+        {
+            var patient = await ((UserService)service).InsertPatient(model);
+
+            if (patient != 0)
+            {
+                return Ok(patient);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("patients/edit")]
+        public async Task<ActionResult<Doctor>> EditPatient([FromBody] Patient model)
+        {
+            var patient = await ((UserService)service).UpdatePatient(model);
+
+            if (patient != 0)
+            {
+                return Ok(patient);
             }
             else
             {

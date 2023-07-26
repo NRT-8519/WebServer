@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WebServer.Models.ClinicData.Entities;
 using WebServer.Models.UserData;
 
 namespace WebServer.Services.Contexts
@@ -8,6 +9,8 @@ namespace WebServer.Services.Contexts
         public UserContext(DbContextOptions<UserContext> options) : base(options) { }
 
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Doctor> Doctors { get; set; }
+        public virtual DbSet<Patient> Patients { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -15,16 +18,31 @@ namespace WebServer.Services.Contexts
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasKey(u => u.Id);
-                entity.Property(u => u.UUID).IsRequired();
+                entity.HasKey(u => u.UUID);
                 entity.Property(u => u.Username).IsRequired();
                 entity.Property(u => u.Password).IsRequired();
-                entity.HasMany(u => u.Emails).WithOne().HasForeignKey(e => e.UserId).IsRequired();
-                entity.HasMany(u => u.PhoneNumbers).WithOne().HasForeignKey(p => p.UserId).IsRequired();
+                entity.HasMany(u => u.Emails).WithOne().HasForeignKey(e => e.UserUUID).IsRequired();
+                entity.HasMany(u => u.PhoneNumbers).WithOne().HasForeignKey(p => p.UserUUID).IsRequired();
                 entity.Property(u => u.IsDisabled).IsRequired();
                 entity.Property(u => u.IsExpired).IsRequired();
                 entity.Property(u => u.PasswordExpiryDate).IsRequired();
-                entity.HasMany(u => u.Roles).WithOne().HasForeignKey(r => r.UserId).IsRequired();
+                entity.HasMany(u => u.Roles).WithOne().HasForeignKey(r => r.UserUUID).IsRequired();
+            });
+
+            modelBuilder.Entity<Doctor>(entity =>
+            {
+                entity.HasMany(d => d.Notes).WithOne().HasForeignKey(n => n.DoctorUUID);
+                entity.HasMany(d => d.Prescriptions).WithOne().HasForeignKey(p => p.DoctorUUID);
+                entity.HasMany(d => d.Schedules).WithOne().HasForeignKey(s => s.DoctorUUID);
+                entity.HasMany(d => d.TimeOffs).WithOne().HasForeignKey(t => t.DoctorUUID);
+                entity.HasMany(d => d.WorkShifts).WithOne().HasForeignKey(w => w.DoctorUUID);
+            });
+
+            modelBuilder.Entity<Patient>(entity =>
+            {
+                entity.HasMany(d => d.Notes).WithOne().HasForeignKey(n => n.PatientUUID);
+                entity.HasMany(d => d.Prescriptions).WithOne().HasForeignKey(p => p.PatientUUID);
+                entity.HasMany(d => d.Schedules).WithOne().HasForeignKey(s => s.PatientUUID);
             });
         }
     }

@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using WebServer.Models.UserData.Relations;
 
 namespace WebServer.Models.UserData
 {
     [Table("user")]
-    [PrimaryKey("Id")]
+    [PrimaryKey("UUID")]
     public class User
     {
         /// <summary>
@@ -15,7 +16,8 @@ namespace WebServer.Models.UserData
         [Column("id")]
         [Key]
         [Required]
-        public uint? Id { get; set; }
+        [JsonIgnore]
+        public uint Id { get; set; }
 
         /// <summary>
         /// User's UUID
@@ -23,7 +25,7 @@ namespace WebServer.Models.UserData
         [Column("uuid")]
         [Key]
         [Required]
-        public Guid? UUID { get; set; }
+        public Guid UUID { get; set; }
 
         /// <summary>
         /// User's Username value
@@ -38,20 +40,31 @@ namespace WebServer.Models.UserData
         /// </summary>
         [Column("password")]
         [Required]
+        [JsonIgnore]
         public string Password { get; set; }
+
+
+        /// <summary>
+        /// User's personal data, such as first name, last name, date of birth etc.
+        /// </summary>
+
+        [Required]
+        [ForeignKey("UUID")]
+        public PersonalData PersonalData { get; set; }
+
 
         /// <summary>
         /// List of user's emails. One user can have more than one email.
         /// </summary>
         [Required]
-        [ForeignKey("UserId")]
+        [ForeignKey("UserUUID")]
         public List<UserEmail> Emails { get; set; } = new List<UserEmail>();
 
         /// <summary>
         /// User's phone numbers. One user can have more than one phone number.
         /// </summary>
         [Required]
-        [ForeignKey("UserId")]
+        [ForeignKey("UserUUID")]
         public List<UserPhoneNumber> PhoneNumbers { get; set; } = new List<UserPhoneNumber>();
 
         /// <summary>
@@ -59,6 +72,7 @@ namespace WebServer.Models.UserData
         /// </summary>
         [Required]
         [Column("disabled")]
+        [JsonIgnore]
         public bool IsDisabled { get; set; }
 
         /// <summary>
@@ -66,6 +80,7 @@ namespace WebServer.Models.UserData
         /// </summary>
         [Required]
         [Column("expired")]
+        [JsonIgnore]
         public bool IsExpired { get; set; }
 
         /// <summary>
@@ -73,13 +88,14 @@ namespace WebServer.Models.UserData
         /// </summary>
         [Required]
         [Column("password_expiry")]
+        [JsonIgnore]
         public DateTime PasswordExpiryDate { get; set; }
 
         /// <summary>
         /// List of user roles. One user can have more than one role.
         /// </summary>
         [Required]
-        [ForeignKey("UserId")]
+        [ForeignKey("UserUUID")]
         public List<UserRole> Roles { get; set; } = new List<UserRole>();
     }
 }

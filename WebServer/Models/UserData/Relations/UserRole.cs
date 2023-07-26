@@ -1,18 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using WebServer.Authentication;
 
 namespace WebServer.Models.UserData.Relations
 {
     [Table("user_roles")]
-    [PrimaryKey("UserId")]
+    [PrimaryKey("UserUUID")]
     public class UserRole
     {
         [Key]
         [Required]
-        [Column("user_id")]
-        public uint UserId { get; set; }
+        [Column("user_uuid")]
+        [JsonIgnore]
+        public Guid UserUUID { get; set; }
 
         [Required]
         [Column("role")]

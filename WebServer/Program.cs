@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using System.Security.Cryptography.Xml;
 using System.Text;
 using WebServer.Authentication;
+using WebServer.Models.ClinicData.Entities;
 using WebServer.Models.MedicineData;
 using WebServer.Models.UserData;
 using WebServer.Services;
@@ -38,6 +39,8 @@ builder.Services.AddDbContextPool<MedicineContext>(options =>
 });
 
 builder.Services.AddScoped<IDbService<User>, UserService>();
+builder.Services.AddScoped<IDbService<Doctor>, DoctorService>();
+builder.Services.AddScoped<IDbService<Patient>, PatientService>();
 builder.Services.AddScoped<IDbService<Company>, CompanyService>();
 builder.Services.AddScoped<IDbService<Issuer>, IssuerService>();
 builder.Services.AddScoped<IDbService<Medicine>, MedicineService>();

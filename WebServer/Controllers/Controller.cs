@@ -15,13 +15,13 @@ namespace WebServer.Controllers
             this.service = service;
         }
 
-        public abstract Task<ActionResult<IEnumerable<T>>> GetAll(); 
-        public abstract Task<ActionResult<T>> GetById(int id);
-        public abstract Task<ActionResult<T>> GetByUUID(Guid UUID);
-        public abstract Task<ActionResult<T>> Add(T entity);
-        public abstract Task<ActionResult<T>> Edit(T entity);
-        public abstract Task<ActionResult<T>> Remove(T entity);
-        public abstract Task<ActionResult<T>> RemoveById(int id);
-        public abstract Task<ActionResult<T>> RemoveByUUID(Guid UUID);
+        public abstract Task<IActionResult> GetAll(); 
+        public abstract Task<IActionResult> GetById(int id);
+        public abstract Task<IActionResult> GetByUUID(Guid UUID);
+        public abstract Task<IActionResult> Add(T entity);
+        public abstract Task<IActionResult> Edit(T entity);
+        public abstract Task<IActionResult> Remove(T entity);
+        public abstract Task<IActionResult> RemoveById(int id);
+        public abstract Task<IActionResult> RemoveByUUID(Guid UUID);
     }
 }

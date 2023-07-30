@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using WebServer.Authentication;
 using WebServer.Models;
 using WebServer.Models.ClinicData.Entities;
+using WebServer.Models.DTOs;
 using WebServer.Models.UserData;
+using WebServer.Models.UserData.Relations;
 using WebServer.Services;
 
 namespace WebServer.Controllers
@@ -21,13 +23,39 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("all")]
-        public override async Task<ActionResult<IEnumerable<User>>> GetAll()
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public override async Task<IActionResult> GetAll()
         {
             var result = await service.FindAll();
+            List<UserDTO> DTOs = new List<UserDTO>();
+            foreach (User user in result)
+            {
+                List<string> UserEmails = new List<string>();
+                List<string> UserPhoneNumbers = new List<string>();
+                foreach (UserEmail email in user.Emails) { UserEmails.Add(email.Email); }
+                foreach (UserPhoneNumber number in user.PhoneNumbers) { UserPhoneNumbers.Add(number.PhoneNumber); }
+                DTOs.Add(new UserDTO { 
+                    UUID = user.UUID, 
+                    UserName = user.Username, 
+                    FirstName = user.PersonalData.FirstName, 
+                    MiddleName = user.PersonalData.MiddleName, 
+                    LastName = user.PersonalData.LastName, 
+                    Title = user.PersonalData.Title, 
+                    DateOfBirth = user.PersonalData.DateOfBirth, 
+                    SSN = user.PersonalData.SSN, 
+                    Gender = user.PersonalData.Gender, 
+                    Emails = UserEmails, 
+                    PhoneNumbers = UserPhoneNumbers, 
+                    Role = user.Roles.First().Role, 
+                    IsExpired = user.IsExpired, 
+                    IsDisabled = user.IsDisabled, 
+                    PasswordExpiry = user.PasswordExpiryDate
+                });
+            }
             if (result.Any()) 
             {
                 logger.LogInformation("Fetched all users.");
-                return Ok(result);
+                return Ok(DTOs);
             }
             else
             {
@@ -37,12 +65,35 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public override async Task<ActionResult<User>> GetById(int id)
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public override async Task<IActionResult> GetById(int id)
         {
             var user = await service.FindById(id);
             if (user != default) 
             {
-                return Ok(user);
+                List<string> UserEmails = new List<string>();
+                List<string> UserPhoneNumbers = new List<string>();
+                foreach (UserEmail email in user.Emails) { UserEmails.Add(email.Email); }
+                foreach (UserPhoneNumber number in user.PhoneNumbers) { UserPhoneNumbers.Add(number.PhoneNumber); }
+
+                return Ok(new UserDTO
+                {
+                    UUID = user.UUID,
+                    UserName = user.Username,
+                    FirstName = user.PersonalData.FirstName,
+                    MiddleName = user.PersonalData.MiddleName,
+                    LastName = user.PersonalData.LastName,
+                    Title = user.PersonalData.Title,
+                    DateOfBirth = user.PersonalData.DateOfBirth,
+                    SSN = user.PersonalData.SSN,
+                    Gender = user.PersonalData.Gender,
+                    Emails = UserEmails,
+                    PhoneNumbers = UserPhoneNumbers,
+                    Role = user.Roles.First().Role,
+                    IsExpired = user.IsExpired,
+                    IsDisabled = user.IsDisabled,
+                    PasswordExpiry = user.PasswordExpiryDate
+                });
             }
             else
             {
@@ -51,12 +102,35 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("{UUID}")]
-        public override async Task<ActionResult<User>> GetByUUID(Guid UUID)
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public override async Task<IActionResult> GetByUUID(Guid UUID)
         {
             var user = await service.FindByUUID(UUID);
             if (user != default)
             {
-                return Ok(user);
+                List<string> UserEmails = new List<string>();
+                List<string> UserPhoneNumbers = new List<string>();
+                foreach (UserEmail email in user.Emails) { UserEmails.Add(email.Email); }
+                foreach (UserPhoneNumber number in user.PhoneNumbers) { UserPhoneNumbers.Add(number.PhoneNumber); }
+
+                return Ok(new UserDTO
+                {
+                    UUID = user.UUID,
+                    UserName = user.Username,
+                    FirstName = user.PersonalData.FirstName,
+                    MiddleName = user.PersonalData.MiddleName,
+                    LastName = user.PersonalData.LastName,
+                    Title = user.PersonalData.Title,
+                    DateOfBirth = user.PersonalData.DateOfBirth,
+                    SSN = user.PersonalData.SSN,
+                    Gender = user.PersonalData.Gender,
+                    Emails = UserEmails,
+                    PhoneNumbers = UserPhoneNumbers,
+                    Role = user.Roles.First().Role,
+                    IsExpired = user.IsExpired,
+                    IsDisabled = user.IsDisabled,
+                    PasswordExpiry = user.PasswordExpiryDate
+                });
             }
             else
             {
@@ -65,7 +139,8 @@ namespace WebServer.Controllers
         }
 
         [HttpPost("add")]
-        public override async Task<ActionResult<User>> Add([FromBody] User model)
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public override async Task<IActionResult> Add([FromBody] User model)
         {
             var user = await service.Insert(model);
 
@@ -80,7 +155,8 @@ namespace WebServer.Controllers
         }
 
         [HttpPut("edit")]
-        public override async Task<ActionResult<User>> Edit([FromBody] User model)
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public override async Task<IActionResult> Edit([FromBody] User model)
         {
             var user = await service.Update(model);
 
@@ -95,7 +171,8 @@ namespace WebServer.Controllers
         }
 
         [HttpDelete("remove")]
-        public override async Task<ActionResult<User>> Remove([FromBody] User model)
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public override async Task<IActionResult> Remove([FromBody] User model)
         {
             var user = await service.Delete(model);
 
@@ -110,7 +187,8 @@ namespace WebServer.Controllers
         }
 
         [HttpDelete("remove/{id}")]
-        public override async Task<ActionResult<User>> RemoveById(int id)
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public override async Task<IActionResult> RemoveById(int id)
         {
             var user = await service.DeleteById(id);
 
@@ -125,161 +203,14 @@ namespace WebServer.Controllers
         }
 
         [HttpDelete("remove/{UUID}")]
-        public override async Task<ActionResult<User>> RemoveByUUID(Guid UUID)
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public override async Task<IActionResult> RemoveByUUID(Guid UUID)
         {
             var user = await service.DeleteByUUID(UUID);
 
             if (user != 0)
             {
                 return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-
-        [HttpGet("doctors/all")]
-        public async Task<ActionResult<IEnumerable<Doctor>>> GetAllDoctors()
-        {
-            var result = await ((UserService)service).FindAllDoctors();
-            if (result.Any())
-            {
-                logger.LogInformation("Fetched all doctors.");
-                return Ok(result);
-            }
-            else
-            {
-                logger.LogInformation("Doctors database empty.");
-                return NoContent();
-            }
-        }
-
-        [HttpGet("doctors/{id:int}")]
-        public async Task<ActionResult<Doctor>> GetDoctorById(int id)
-        {
-            var doctor = await ((UserService)service).FindDoctorById(id);
-            if (doctor != default)
-            {
-                return Ok(doctor);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpGet("doctors/{UUID}")]
-        public async Task<ActionResult<Doctor>> GetDoctorByUUID(Guid UUID)
-        {
-            var doctor = await ((UserService)service).FindDoctorByUUID(UUID);
-            if (doctor != default)
-            {
-                return Ok(doctor);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpPost("doctors/add")]
-        public async Task<ActionResult<Doctor>> AddDoctor([FromBody] Doctor model)
-        {
-            var user = await ((UserService)service).InsertDoctor(model);
-
-            if (user != 0)
-            {
-                return Ok(user);
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-
-        [HttpPut("doctors/edit")]
-        public async Task<ActionResult<Doctor>> EditDoctor([FromBody] Doctor model)
-        {
-            var user = await ((UserService)service).UpdateDoctor(model);
-
-            if (user != 0)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-
-        [HttpGet("patients/all")]
-        public async Task<ActionResult<IEnumerable<Doctor>>> GetAllPatients()
-        {
-            var result = await ((UserService)service).FindAllPatients();
-            if (result.Any())
-            {
-                logger.LogInformation("Fetched all patients.");
-                return Ok(result);
-            }
-            else
-            {
-                logger.LogInformation("Patients database empty.");
-                return NoContent();
-            }
-        }
-
-        [HttpGet("patients/{id:int}")]
-        public async Task<ActionResult<Patient>> GetPatientById(int id)
-        {
-            var patient = await ((UserService)service).FindPatientById(id);
-            if (patient != default)
-            {
-                return Ok(patient);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpGet("patients/{UUID}")]
-        public async Task<ActionResult<Patient>> GetPatientByUUID(Guid UUID)
-        {
-            var patient = await ((UserService)service).FindPatientByUUID(UUID);
-            if (patient != default)
-            {
-                return Ok(patient);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpPost("patients/add")]
-        public async Task<ActionResult<Patient>> AddPatient([FromBody] Patient model)
-        {
-            var patient = await ((UserService)service).InsertPatient(model);
-
-            if (patient != 0)
-            {
-                return Ok(patient);
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-
-        [HttpPut("patients/edit")]
-        public async Task<ActionResult<Doctor>> EditPatient([FromBody] Patient model)
-        {
-            var patient = await ((UserService)service).UpdatePatient(model);
-
-            if (patient != 0)
-            {
-                return Ok(patient);
             }
             else
             {
@@ -300,6 +231,13 @@ namespace WebServer.Controllers
             {
                 return Ok(token);
             }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("validate")]
+        public IActionResult Validate(string token)
+        {
+            return tokenService.Validate(token) ? Ok(true) : Unauthorized(false);
         }
     }
 }

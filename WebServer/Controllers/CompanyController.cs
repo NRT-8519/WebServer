@@ -16,7 +16,7 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("all")]
-        public override async Task<ActionResult<IEnumerable<Company>>> GetAll()
+        public override async Task<IActionResult> GetAll()
         {
             var result = await service.FindAll();
 
@@ -24,7 +24,7 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public override async Task<ActionResult<Company>> GetById(int id)
+        public override async Task<IActionResult> GetById(int id)
         {
             var result = await service.FindById(id);
 
@@ -32,7 +32,7 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("{UUID}")]
-        public override async Task<ActionResult<Company>> GetByUUID(Guid UUID)
+        public override async Task<IActionResult> GetByUUID(Guid UUID)
         {
             var result = await service.FindByUUID(UUID);
 
@@ -41,7 +41,7 @@ namespace WebServer.Controllers
         }
 
         [HttpPost("add")]
-        public override async Task<ActionResult<Company>> Add([FromBody] Company company)
+        public override async Task<IActionResult> Add([FromBody] Company company)
         {
             var result = await service.Insert(company);
 
@@ -49,7 +49,7 @@ namespace WebServer.Controllers
         }
 
         [HttpPut("edit")]
-        public override async Task<ActionResult<Company>> Edit([FromBody] Company company)
+        public override async Task<IActionResult> Edit([FromBody] Company company)
         {
             var result = await service.Update(company);
 
@@ -57,7 +57,7 @@ namespace WebServer.Controllers
         }
 
         [HttpDelete("remove")]
-        public override async Task<ActionResult<Company>> Remove(Company company)
+        public override async Task<IActionResult> Remove(Company company)
         {
             var result = await service.Delete(company);
 
@@ -65,7 +65,7 @@ namespace WebServer.Controllers
         }
 
         [HttpDelete("remove/{id}")]
-        public override async Task<ActionResult<Company>> RemoveById(int id)
+        public override async Task<IActionResult> RemoveById(int id)
         {
             var result = await service.DeleteById(id);
 
@@ -73,7 +73,7 @@ namespace WebServer.Controllers
         }
 
         [HttpDelete("remove/{UUID}")]
-        public override async Task<ActionResult<Company>> RemoveByUUID(Guid UUID)
+        public override async Task<IActionResult> RemoveByUUID(Guid UUID)
         {
             var result = await service.DeleteByUUID(UUID);
 

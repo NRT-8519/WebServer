@@ -13,7 +13,7 @@ namespace WebServer.Controllers
         public MedicineController(ILogger<MedicineController> logger, IDbService<Medicine> service) : base(logger, service) { }
 
         [HttpGet("all")]
-        public override async Task<ActionResult<IEnumerable<Medicine>>> GetAll()
+        public override async Task<IActionResult> GetAll()
         {
             var result = await service.FindAll();
 
@@ -21,7 +21,7 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public override async Task<ActionResult<Medicine>> GetById(int id)
+        public override async Task<IActionResult> GetById(int id)
         {
             var result = await service.FindById(id);
 
@@ -29,7 +29,7 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("{UUID}")]
-        public override async Task<ActionResult<Medicine>> GetByUUID(Guid UUID)
+        public override async Task<IActionResult> GetByUUID(Guid UUID)
         {
             var result = await service.FindByUUID(UUID);
 
@@ -38,7 +38,7 @@ namespace WebServer.Controllers
         }
 
         [HttpPost("add")]
-        public override async Task<ActionResult<Medicine>> Add([FromBody] Medicine medicine)
+        public override async Task<IActionResult> Add([FromBody] Medicine medicine)
         {
             var result = await service.Insert(medicine);
 
@@ -46,7 +46,7 @@ namespace WebServer.Controllers
         }
 
         [HttpPut("edit")]
-        public override async Task<ActionResult<Medicine>> Edit([FromBody] Medicine medicine)
+        public override async Task<IActionResult> Edit([FromBody] Medicine medicine)
         {
             var result = await service.Update(medicine);
 
@@ -54,7 +54,7 @@ namespace WebServer.Controllers
         }
 
         [HttpDelete("remove")]
-        public override async Task<ActionResult<Medicine>> Remove(Medicine medicine)
+        public override async Task<IActionResult> Remove(Medicine medicine)
         {
             var result = await service.Delete(medicine);
 
@@ -62,7 +62,7 @@ namespace WebServer.Controllers
         }
 
         [HttpDelete("remove/{id}")]
-        public override async Task<ActionResult<Medicine>> RemoveById(int id)
+        public override async Task<IActionResult> RemoveById(int id)
         {
             var result = await service.DeleteById(id);
 
@@ -70,7 +70,7 @@ namespace WebServer.Controllers
         }
 
         [HttpDelete("remove/{UUID}")]
-        public override async Task<ActionResult<Medicine>> RemoveByUUID(Guid UUID)
+        public override async Task<IActionResult> RemoveByUUID(Guid UUID)
         {
             var result = await service.DeleteByUUID(UUID);
 

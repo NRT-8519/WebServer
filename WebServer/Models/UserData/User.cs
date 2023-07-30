@@ -92,7 +92,7 @@ namespace WebServer.Models.UserData
         public DateTime PasswordExpiryDate { get; set; }
 
         /// <summary>
-        /// List of user roles. One user can have more than one role.
+        /// List of user roles. One user can have only one role.
         /// </summary>
         [Required]
         [ForeignKey("UserUUID")]

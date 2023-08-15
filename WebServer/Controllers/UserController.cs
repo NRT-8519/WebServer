@@ -223,9 +223,9 @@ namespace WebServer.Controllers
         public IActionResult Authenticate(Login user)
         {
             var token = tokenService.Authenticate(user);
-            if (token == null)
+            if (token == null || token.IsAuthSuccessful == false)
             {
-                return Unauthorized();
+                return Unauthorized(token);
             }
             else
             {

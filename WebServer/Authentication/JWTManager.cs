@@ -43,7 +43,7 @@ namespace WebServer.Authentication
                         new Claim(JwtRegisteredClaimNames.Aud, configuration["Jwt:Audience"]),
                         new Claim(JwtRegisteredClaimNames.Iss, configuration["Jwt:Issuer"])
                     }),
-                    Expires = DateTime.UtcNow.AddMinutes(60),
+                    Expires = DateTime.UtcNow.AddMinutes(60 * 8),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
                 };
 
@@ -62,17 +62,24 @@ namespace WebServer.Authentication
 
             try
             {
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                if (token != "invalid_token")
                 {
-                    ValidateIssuer = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidateAudience = true,
-                    ValidIssuer = configuration["Jwt:Issuer"],
-                    ValidAudience = configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                }, out SecurityToken validatedToken);
+                    tokenHandler.ValidateToken(token, new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidateAudience = true,
+                        ValidIssuer = configuration["Jwt:Issuer"],
+                        ValidAudience = configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
+                    }, out SecurityToken validatedToken);
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch
             {

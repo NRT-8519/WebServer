@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using WebServer.Authentication;
 using WebServer.Models.ClinicData.Entities;
+using WebServer.Models.DTOs;
 using WebServer.Models.UserData;
+using WebServer.Models.UserData.Relations;
 using WebServer.Services;
 
 namespace WebServer.Controllers
@@ -17,18 +19,47 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("all")]
-        [Authorize(Roles = "ADMINISTRATOR,DOCTOR,PATIENT,USER")]
+        [Authorize(Roles = "ADMINISTRATOR,DOCTOR")]
         public override async Task<IActionResult> GetAll()
         {
             var result = await ((PatientService)service).FindAll();
             if (result.Any())
             {
-                logger.LogInformation("Fetched all doctors.");
+                logger.LogInformation("Fetched all patients.");
                 return Ok(result);
             }
             else
             {
-                logger.LogInformation("Doctors database empty.");
+                logger.LogInformation("Patients database empty.");
+                return NoContent();
+            }
+        }
+
+        [HttpGet("all/basic")]
+        [Authorize(Roles = "ADMINISTRATOR,DOCTOR")]
+        public async Task<IActionResult> GetAllBasic()
+        {
+            var result = await ((PatientService)service).FindAll();
+            if (result.Any())
+            {
+                List<PatientBasicDTO> DTOs = new();
+                foreach (var patient in result)
+                {
+                    DTOs.Add(new PatientBasicDTO 
+                    { 
+                        FirstName = patient.PersonalData.FirstName, 
+                        MiddleName = patient.PersonalData.MiddleName,
+                        LastName = patient.PersonalData.LastName,
+                        UUID = patient.PatientUUID,
+                        AssignedDoctor = "Not assigned"
+                    });
+                }
+                logger.LogInformation("Fetched all patients basic information.");
+                return Ok(DTOs);
+            }
+            else
+            {
+                logger.LogInformation("Patients database empty.");
                 return NoContent();
             }
         }
@@ -52,10 +83,39 @@ namespace WebServer.Controllers
         [Authorize(Roles = "ADMINISTRATOR,DOCTOR,PATIENT")]
         public override async Task<IActionResult> GetByUUID(Guid UUID)
         {
-            var doctor = await ((PatientService)service).FindByUUID(UUID);
-            if (doctor != default)
+            var result = await ((PatientService)service).FindByUUID(UUID);
+            
+            if (result != default)
             {
-                return Ok(doctor);
+                List<string> Emails = new(), PhoneNumbers = new();
+
+                foreach(UserEmail email in result.Emails)
+                {
+                    Emails.Add(email.Email);
+                }
+
+                foreach (UserPhoneNumber phone in result.PhoneNumbers)
+                {
+                    PhoneNumbers.Add(phone.PhoneNumber);
+                }
+
+                PatientDetailsDTO patient = new()
+                {
+                    UUID = result.PatientUUID,
+                    FirstName = result.PersonalData.FirstName,
+                    MiddleName = result.PersonalData.MiddleName,
+                    LastName = result.PersonalData.LastName,
+                    Title = result.PersonalData.Title,
+                    Emails = Emails,
+                    PhoneNumbers = PhoneNumbers,
+                    DateOfBirth = result.PersonalData.DateOfBirth,
+                    Gender = result.PersonalData.Gender,
+                    SSN = result.PersonalData.SSN,
+                    PasswordExpiryDate = result.PasswordExpiryDate,
+                    IsDisabled = result.IsDisabled,
+                    IsExpired = result.IsExpired
+                };
+                return Ok(patient);
             }
             else
             {

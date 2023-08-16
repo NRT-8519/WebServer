@@ -72,7 +72,6 @@ namespace WebServer.Models.UserData
         /// </summary>
         [Required]
         [Column("disabled")]
-        [JsonIgnore]
         public bool IsDisabled { get; set; }
 
         /// <summary>
@@ -80,7 +79,6 @@ namespace WebServer.Models.UserData
         /// </summary>
         [Required]
         [Column("expired")]
-        [JsonIgnore]
         public bool IsExpired { get; set; }
 
         /// <summary>
@@ -88,7 +86,6 @@ namespace WebServer.Models.UserData
         /// </summary>
         [Required]
         [Column("password_expiry")]
-        [JsonIgnore]
         public DateTime PasswordExpiryDate { get; set; }
 
         /// <summary>

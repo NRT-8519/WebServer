@@ -15,7 +15,6 @@ namespace WebServer.Models.UserData
         /// </summary>
         [Column("id")]
         [Key]
-        [Required]
         [JsonIgnore]
         public uint Id { get; set; }
 
@@ -32,14 +31,12 @@ namespace WebServer.Models.UserData
         /// </summary>
         [Column("username")]
         [Key]
-        [Required]
         public string Username { get; set; }
 
         /// <summary>
         /// User's Password value. Should be encrypted.
         /// </summary>
         [Column("password")]
-        [Required]
         [JsonIgnore]
         public string Password { get; set; }
 
@@ -48,7 +45,6 @@ namespace WebServer.Models.UserData
         /// User's personal data, such as first name, last name, date of birth etc.
         /// </summary>
 
-        [Required]
         [ForeignKey("UUID")]
         public PersonalData PersonalData { get; set; }
 
@@ -56,42 +52,36 @@ namespace WebServer.Models.UserData
         /// <summary>
         /// List of user's emails. One user can have more than one email.
         /// </summary>
-        [Required]
         [ForeignKey("UserUUID")]
         public List<UserEmail> Emails { get; set; } = new List<UserEmail>();
 
         /// <summary>
         /// User's phone numbers. One user can have more than one phone number.
         /// </summary>
-        [Required]
         [ForeignKey("UserUUID")]
         public List<UserPhoneNumber> PhoneNumbers { get; set; } = new List<UserPhoneNumber>();
 
         /// <summary>
         /// Specifies whether a user's account is disabled.
         /// </summary>
-        [Required]
         [Column("disabled")]
         public bool IsDisabled { get; set; }
 
         /// <summary>
         /// Specifies whether a user's password has expired and needs to be changed.
         /// </summary>
-        [Required]
         [Column("expired")]
         public bool IsExpired { get; set; }
 
         /// <summary>
         /// Specifies password expiry date.
         /// </summary>
-        [Required]
         [Column("password_expiry")]
         public DateTime PasswordExpiryDate { get; set; }
 
         /// <summary>
         /// List of user roles. One user can have only one role.
         /// </summary>
-        [Required]
         [ForeignKey("UserUUID")]
         public List<UserRole> Roles { get; set; } = new List<UserRole>();
     }

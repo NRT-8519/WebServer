@@ -12,9 +12,9 @@ namespace WebServer.Controllers
     [Authorize]
     [Route("api/users/patients")]
     [ApiController]
-    public class PatientController : Controller<Patient>
+    public class PatientController : Controller<Patient, PatientBasicDTO, PatientDetailsDTO>
     {
-        public PatientController(ILogger<PatientController> logger, IDbService<Patient> service) : base(logger, service)
+        public PatientController(ILogger<PatientController> logger, IDbService<Patient, PatientBasicDTO, PatientDetailsDTO> service) : base(logger, service)
         {
         }
 
@@ -25,8 +25,26 @@ namespace WebServer.Controllers
             var result = await ((PatientService)service).FindAll();
             if (result.Any())
             {
-                logger.LogInformation("Fetched all patients.");
-                return Ok(result);
+                List<PatientBasicDTO> DTOs = new();
+                foreach (var patient in result)
+                {
+                    DTOs.Add(new PatientBasicDTO
+                    {
+                        FirstName = patient.PersonalData.FirstName,
+                        MiddleName = patient.PersonalData.MiddleName,
+                        LastName = patient.PersonalData.LastName,
+                        UUID = patient.PatientUUID,
+                        AssignedDoctor = new DoctorBasicDTO
+                        {
+                            FirstName = patient.AssignedDoctor.PersonalData.FirstName,
+                            MiddleName = patient.AssignedDoctor.PersonalData.MiddleName,
+                            LastName = patient.AssignedDoctor.PersonalData.LastName,
+                            UUID = patient.AssignedDoctor.DoctorUUID
+                        }
+                    });
+                }
+                logger.LogInformation("Fetched all patients basic information.");
+                return Ok(DTOs);
             }
             else
             {
@@ -51,7 +69,13 @@ namespace WebServer.Controllers
                         MiddleName = patient.PersonalData.MiddleName,
                         LastName = patient.PersonalData.LastName,
                         UUID = patient.PatientUUID,
-                        AssignedDoctor = "Not assigned"
+                        AssignedDoctor = new DoctorBasicDTO
+                        {
+                            FirstName = patient.AssignedDoctor.PersonalData.FirstName,
+                            MiddleName = patient.AssignedDoctor.PersonalData.MiddleName,
+                            LastName = patient.AssignedDoctor.PersonalData.LastName,
+                            UUID = patient.AssignedDoctor.DoctorUUID
+                        }
                     });
                 }
                 logger.LogInformation("Fetched all patients basic information.");
@@ -87,16 +111,17 @@ namespace WebServer.Controllers
             
             if (result != default)
             {
-                List<string> Emails = new(), PhoneNumbers = new();
+                List<EmailDTO> Emails = new();
+                List<PhoneNumberDTO> PhoneNumbers = new();
 
                 foreach(UserEmail email in result.Emails)
                 {
-                    Emails.Add(email.Email);
+                    Emails.Add(new EmailDTO { Email = email.Email });
                 }
 
                 foreach (UserPhoneNumber phone in result.PhoneNumbers)
                 {
-                    PhoneNumbers.Add(phone.PhoneNumber);
+                    PhoneNumbers.Add(new PhoneNumberDTO { PhoneNumber = phone.PhoneNumber });
                 }
 
                 PatientDetailsDTO patient = new()
@@ -113,7 +138,14 @@ namespace WebServer.Controllers
                     SSN = result.PersonalData.SSN,
                     PasswordExpiryDate = result.PasswordExpiryDate,
                     IsDisabled = result.IsDisabled,
-                    IsExpired = result.IsExpired
+                    IsExpired = result.IsExpired,
+                    AssignedDoctor = new DoctorBasicDTO
+                    {
+                        FirstName = result.AssignedDoctor.PersonalData.FirstName,
+                        MiddleName = result.AssignedDoctor.PersonalData.MiddleName,
+                        LastName = result.AssignedDoctor.PersonalData.LastName,
+                        UUID = result.AssignedDoctor.DoctorUUID
+                    }
                 };
                 return Ok(patient);
             }
@@ -141,7 +173,7 @@ namespace WebServer.Controllers
 
         [HttpPut("edit")]
         [Authorize(Roles = "ADMINISTRATOR,DOCTOR")]
-        public override async Task<IActionResult> Edit([FromBody] Patient model)
+        public override async Task<IActionResult> Edit([FromBody] PatientDetailsDTO model)
         {
             var user = await ((PatientService)service).Update(model);
 
@@ -157,7 +189,7 @@ namespace WebServer.Controllers
 
         [HttpDelete("remove")]
         [Obsolete]
-        public override async Task<IActionResult> Remove(Patient entity)
+        public override async Task<IActionResult> Remove(PatientDetailsDTO entity)
         {
             throw new NotImplementedException();
         }

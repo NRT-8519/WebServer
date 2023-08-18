@@ -8,6 +8,7 @@ using System.Security.Cryptography.Xml;
 using System.Text;
 using WebServer.Authentication;
 using WebServer.Models.ClinicData.Entities;
+using WebServer.Models.DTOs;
 using WebServer.Models.MedicineData;
 using WebServer.Models.UserData;
 using WebServer.Services;
@@ -38,12 +39,12 @@ builder.Services.AddDbContextPool<MedicineContext>(options =>
     options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
 });
 
-builder.Services.AddScoped<IDbService<User>, UserService>();
-builder.Services.AddScoped<IDbService<Doctor>, DoctorService>();
-builder.Services.AddScoped<IDbService<Patient>, PatientService>();
-builder.Services.AddScoped<IDbService<Company>, CompanyService>();
-builder.Services.AddScoped<IDbService<Issuer>, IssuerService>();
-builder.Services.AddScoped<IDbService<Medicine>, MedicineService>();
+builder.Services.AddScoped<IDbService<User, User, User>, UserService>();
+builder.Services.AddScoped<IDbService<Doctor, Doctor, Doctor>, DoctorService>();
+builder.Services.AddScoped<IDbService<Patient, PatientBasicDTO, PatientDetailsDTO>, PatientService>();
+builder.Services.AddScoped<IDbService<Company, Company, Company>, CompanyService>();
+builder.Services.AddScoped<IDbService<Issuer, Issuer, Issuer>, IssuerService>();
+builder.Services.AddScoped<IDbService<Medicine, Medicine, Medicine>, MedicineService>();
 
 builder.Services.AddScoped<ITokenService<JWTToken>, JWTManager>();
 builder.Services.AddControllers();

@@ -7,7 +7,7 @@ using WebServer.Services.Contexts;
 
 namespace WebServer.Services
 {
-    public sealed class UserService : IDbService<User>
+    public sealed class UserService : IDbService<User, User, User>
     {
         private readonly UserContext context;
 

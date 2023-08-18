@@ -5,7 +5,7 @@ using WebServer.Services.Contexts;
 
 namespace WebServer.Services
 {
-    public class MedicineService : IDbService<Medicine>
+    public class MedicineService : IDbService<Medicine, Medicine, Medicine>
     {
         private readonly MedicineContext context;
 

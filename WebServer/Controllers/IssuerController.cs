@@ -8,10 +8,10 @@ namespace WebServer.Controllers
     [Authorize]
     [Route("api/issuer")]
     [ApiController]
-    public class IssuerController : Controller<Issuer>
+    public class IssuerController : Controller<Issuer, Issuer, Issuer>
     {
 
-        public IssuerController(ILogger<IssuerController> logger, IDbService<Issuer> service) : base(logger, service)
+        public IssuerController(ILogger<IssuerController> logger, IDbService<Issuer, Issuer, Issuer> service) : base(logger, service)
         {
         }
 

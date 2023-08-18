@@ -5,7 +5,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WebServer.Services
 {
-    public class IssuerService : IDbService<Issuer>
+    public class IssuerService : IDbService<Issuer, Issuer, Issuer>
     {
         public readonly IssuerContext context;
 

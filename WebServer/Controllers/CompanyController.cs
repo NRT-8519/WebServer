@@ -8,10 +8,10 @@ namespace WebServer.Controllers
     [Authorize]
     [ApiController]
     [Route("api/company")]
-    public class CompanyController : Controller<Company>
+    public class CompanyController : Controller<Company, Company, Company>
     {
 
-        public CompanyController(ILogger<CompanyController> logger, IDbService<Company> service) : base(logger, service)
+        public CompanyController(ILogger<CompanyController> logger, IDbService<Company, Company, Company> service) : base(logger, service)
         {
         }
 

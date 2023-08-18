@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebServer.Models.ClinicData.Entities;
+using WebServer.Models.DTOs;
 using WebServer.Services.Contexts;
 
 namespace WebServer.Services
 {
-    public class DoctorService : IDbService<Doctor>
+    public class DoctorService : IDbService<Doctor, Doctor, Doctor>
     {
         private readonly UserContext context;
 

@@ -40,6 +40,7 @@ namespace WebServer.Services.Contexts
 
             modelBuilder.Entity<Patient>(entity =>
             {
+                entity.HasOne(p => p.AssignedDoctor).WithOne().HasForeignKey<Patient>(p => p.DoctorUUID);
                 entity.HasMany(d => d.Notes).WithOne().HasForeignKey(n => n.PatientUUID);
                 entity.HasMany(d => d.Prescriptions).WithOne().HasForeignKey(p => p.PatientUUID);
                 entity.HasMany(d => d.Schedules).WithOne().HasForeignKey(s => s.PatientUUID);

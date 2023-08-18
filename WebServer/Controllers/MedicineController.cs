@@ -8,9 +8,9 @@ namespace WebServer.Controllers
     [Authorize]
     [Route("api/medicine")]
     [ApiController]
-    public class MedicineController : Controller<Medicine>
+    public class MedicineController : Controller<Medicine, Medicine, Medicine>
     {
-        public MedicineController(ILogger<MedicineController> logger, IDbService<Medicine> service) : base(logger, service) { }
+        public MedicineController(ILogger<MedicineController> logger, IDbService<Medicine, Medicine, Medicine> service) : base(logger, service) { }
 
         [HttpGet("all")]
         public override async Task<IActionResult> GetAll()

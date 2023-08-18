@@ -10,9 +10,9 @@ namespace WebServer.Controllers
     [Authorize]
     [Route("api/users/doctors")]
     [ApiController]
-    public class DoctorController : Controller<Doctor>
+    public class DoctorController : Controller<Doctor, Doctor, Doctor>
     {
-        public DoctorController(ILogger<DoctorController> logger, IDbService<Doctor> service) : base(logger, service)
+        public DoctorController(ILogger<DoctorController> logger, IDbService<Doctor, Doctor, Doctor> service) : base(logger, service)
         {
         }
 

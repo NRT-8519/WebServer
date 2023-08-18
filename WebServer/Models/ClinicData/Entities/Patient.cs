@@ -11,15 +11,19 @@ namespace WebServer.Models.ClinicData.Entities
         [Required]
         public Guid PatientUUID { get; set; }
 
+        [Column("assigned_doctor_uuid")]
         [Required]
+        public Guid DoctorUUID { get; set; }
+
+        [ForeignKey("DoctorUUID")]
+        public Doctor AssignedDoctor { get; set; }
+
         [ForeignKey("PatientUUID")]
         public List<Notes> Notes { get; set; } = new List<Notes>();
 
-        [Required]
         [ForeignKey("PatientUUID")]
         public List<Prescription> Prescriptions { get; set; } = new List<Prescription>();
 
-        [Required]
         [ForeignKey("PatientUUID")]
         public List<Schedule> Schedules { get; set; } = new List<Schedule>();
     }

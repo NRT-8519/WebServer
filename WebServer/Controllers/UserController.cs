@@ -13,11 +13,11 @@ namespace WebServer.Controllers
     [Authorize]
     [Route("api/users")]
     [ApiController]
-    public class UserController : Controller<User>
+    public class UserController : Controller<User, User, User>
     {
         private readonly ITokenService<JWTToken> tokenService;
 
-        public UserController(ILogger<UserController> logger, IDbService<User> service, ITokenService<JWTToken> tokenService) : base(logger, service)
+        public UserController(ILogger<UserController> logger, IDbService<User, User, User> service, ITokenService<JWTToken> tokenService) : base(logger, service)
         {
             this.tokenService = tokenService;
         }

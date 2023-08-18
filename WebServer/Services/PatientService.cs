@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebServer.Models.ClinicData.Entities;
+using WebServer.Models.DTOs;
+using WebServer.Models.UserData.Relations;
 using WebServer.Services.Contexts;
 
 namespace WebServer.Services
 {
 
-    public class PatientService : IDbService<Patient>
+    public class PatientService : IDbService<Patient, PatientBasicDTO, PatientDetailsDTO>
     {
         private readonly UserContext context;
 
@@ -24,6 +26,8 @@ namespace WebServer.Services
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
                 .Include(d => d.Schedules)
+                .Include(p => p.AssignedDoctor)
+                .Include(p => p.AssignedDoctor.PersonalData)
                 .Where(x => x.Roles.Any(r => r.Role.Equals("PATIENT"))).ToListAsync();
         }
 
@@ -37,6 +41,8 @@ namespace WebServer.Services
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
                 .Include(d => d.Schedules)
+                .Include(p => p.AssignedDoctor)
+                .Include(p => p.AssignedDoctor.PersonalData)
                 .Where(x => x.Id == id && x.Roles.Any(r => r.Role.Equals("PATIENT"))).SingleOrDefaultAsync();
         }
         public async Task<Patient> FindByUUID(Guid UUID)
@@ -49,6 +55,8 @@ namespace WebServer.Services
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
                 .Include(d => d.Schedules)
+                .Include(p => p.AssignedDoctor)
+                .Include(p => p.AssignedDoctor.PersonalData)
                 .Where(x => x.UUID.Equals(UUID) && x.Roles.Any(r => r.Role.Equals("PATIENT"))).SingleOrDefaultAsync();
         }
 
@@ -65,11 +73,46 @@ namespace WebServer.Services
                 return 0;
             }
         }
-        public async Task<int> Update(Patient entity)
+        public async Task<int> Update(PatientDetailsDTO entity)
         {
             try
             {
-                context.Update(entity);
+                List<UserEmail> userEmails = new List<UserEmail>();
+                foreach (var email in entity.Emails)
+                {
+                    if (email != null && email.Email != "")
+                    {
+                        userEmails.Add(new UserEmail { UserUUID = entity.UUID, Email = email.Email });
+
+                    }
+                }
+
+                List<UserPhoneNumber> userPhoneNumbers = new List<UserPhoneNumber>();
+                foreach (var phoneNumber in entity.PhoneNumbers)
+                {
+                    if (phoneNumber != null && phoneNumber.PhoneNumber != "")
+                    {
+                        userPhoneNumbers.Add(new UserPhoneNumber { UserUUID = entity.UUID, PhoneNumber = phoneNumber.PhoneNumber });
+                    }
+                }
+                Patient p = await FindByUUID(entity.UUID);
+                p.UUID = entity.UUID;
+                p.DoctorUUID = entity.AssignedDoctor.UUID;
+                p.PersonalData.FirstName = entity.FirstName;
+                p.PersonalData.MiddleName = entity.MiddleName;
+                p.PersonalData.LastName = entity.LastName;
+                p.PersonalData.Title = entity.Title;
+                p.PersonalData.DateOfBirth = entity.DateOfBirth;
+                p.PersonalData.SSN = entity.SSN;
+                p.PersonalData.Gender = entity.Gender;
+                p.Emails = userEmails;
+                p.PhoneNumbers = userPhoneNumbers;
+
+                p.IsDisabled = entity.IsDisabled;
+                p.IsExpired = entity.IsExpired;
+                p.PasswordExpiryDate = entity.PasswordExpiryDate;
+
+                context.Update(p);
                 return await context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException exception)
@@ -79,7 +122,7 @@ namespace WebServer.Services
             }
         }
 
-        public Task<int> Delete(Patient entity)
+        public Task<int> Delete(PatientBasicDTO entity)
         {
             throw new NotImplementedException();
         }

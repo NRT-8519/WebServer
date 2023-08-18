@@ -4,7 +4,7 @@ using WebServer.Services.Contexts;
 
 namespace WebServer.Services
 {
-    public class CompanyService : IDbService<Company>
+    public class CompanyService : IDbService<Company, Company, Company>
     {
         private readonly CompanyContext context;
         public CompanyService(CompanyContext context) 

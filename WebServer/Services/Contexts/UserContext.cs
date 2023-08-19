@@ -21,8 +21,6 @@ namespace WebServer.Services.Contexts
                 entity.HasKey(u => u.UUID);
                 entity.Property(u => u.Username).IsRequired();
                 entity.Property(u => u.Password).IsRequired();
-                entity.HasMany(u => u.Emails).WithOne().HasForeignKey(e => e.UserUUID).IsRequired();
-                entity.HasMany(u => u.PhoneNumbers).WithOne().HasForeignKey(p => p.UserUUID).IsRequired();
                 entity.Property(u => u.IsDisabled).IsRequired();
                 entity.Property(u => u.IsExpired).IsRequired();
                 entity.Property(u => u.PasswordExpiryDate).IsRequired();

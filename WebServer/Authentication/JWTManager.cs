@@ -22,7 +22,7 @@ namespace WebServer.Authentication
 
         public JWTToken Authenticate(Login login)
         {
-            User user = userContext.Users.Include(u => u.PersonalData).Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).FirstOrDefault(u => u.Username.Equals(login.Username) && u.Password.Equals(login.Password));
+            User user = userContext.Users.Include(u => u.PersonalData).Include(u => u.Roles).FirstOrDefault(u => u.Username.Equals(login.Username) && u.Password.Equals(login.Password));
 
             if (user == null || user == default)
             {

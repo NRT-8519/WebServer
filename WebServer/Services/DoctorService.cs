@@ -18,8 +18,6 @@ namespace WebServer.Services
         {
             return await context.Doctors
                 .Include(u => u.PersonalData)
-                .Include(u => u.Emails)
-                .Include(u => u.PhoneNumbers)
                 .Include(u => u.Roles)
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
@@ -32,8 +30,6 @@ namespace WebServer.Services
         {
             return await context.Doctors
                 .Include(u => u.PersonalData)
-                .Include(u => u.Emails)
-                .Include(u => u.PhoneNumbers)
                 .Include(u => u.Roles)
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
@@ -46,8 +42,6 @@ namespace WebServer.Services
         {
             return await context.Doctors
                 .Include(u => u.PersonalData)
-                .Include(u => u.Emails)
-                .Include(u => u.PhoneNumbers)
                 .Include(u => u.Roles)
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)

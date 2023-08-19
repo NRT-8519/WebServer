@@ -30,10 +30,6 @@ namespace WebServer.Controllers
             List<UserDTO> DTOs = new List<UserDTO>();
             foreach (User user in result)
             {
-                List<string> UserEmails = new List<string>();
-                List<string> UserPhoneNumbers = new List<string>();
-                foreach (UserEmail email in user.Emails) { UserEmails.Add(email.Email); }
-                foreach (UserPhoneNumber number in user.PhoneNumbers) { UserPhoneNumbers.Add(number.PhoneNumber); }
                 DTOs.Add(new UserDTO { 
                     UUID = user.UUID, 
                     UserName = user.Username, 
@@ -44,8 +40,8 @@ namespace WebServer.Controllers
                     DateOfBirth = user.PersonalData.DateOfBirth, 
                     SSN = user.PersonalData.SSN, 
                     Gender = user.PersonalData.Gender, 
-                    Emails = UserEmails, 
-                    PhoneNumbers = UserPhoneNumbers, 
+                    Email = user.PersonalData.Email, 
+                    PhoneNumber = user.PersonalData.PhoneNumber, 
                     Role = user.Roles.First().Role, 
                     IsExpired = user.IsExpired, 
                     IsDisabled = user.IsDisabled, 
@@ -71,10 +67,6 @@ namespace WebServer.Controllers
             var user = await service.FindById(id);
             if (user != default) 
             {
-                List<string> UserEmails = new List<string>();
-                List<string> UserPhoneNumbers = new List<string>();
-                foreach (UserEmail email in user.Emails) { UserEmails.Add(email.Email); }
-                foreach (UserPhoneNumber number in user.PhoneNumbers) { UserPhoneNumbers.Add(number.PhoneNumber); }
 
                 return Ok(new UserDTO
                 {
@@ -87,8 +79,8 @@ namespace WebServer.Controllers
                     DateOfBirth = user.PersonalData.DateOfBirth,
                     SSN = user.PersonalData.SSN,
                     Gender = user.PersonalData.Gender,
-                    Emails = UserEmails,
-                    PhoneNumbers = UserPhoneNumbers,
+                    Email = user.PersonalData.Email,
+                    PhoneNumber = user.PersonalData.PhoneNumber,
                     Role = user.Roles.First().Role,
                     IsExpired = user.IsExpired,
                     IsDisabled = user.IsDisabled,
@@ -108,11 +100,6 @@ namespace WebServer.Controllers
             var user = await service.FindByUUID(UUID);
             if (user != default)
             {
-                List<string> UserEmails = new List<string>();
-                List<string> UserPhoneNumbers = new List<string>();
-                foreach (UserEmail email in user.Emails) { UserEmails.Add(email.Email); }
-                foreach (UserPhoneNumber number in user.PhoneNumbers) { UserPhoneNumbers.Add(number.PhoneNumber); }
-
                 return Ok(new UserDTO
                 {
                     UUID = user.UUID,
@@ -124,8 +111,8 @@ namespace WebServer.Controllers
                     DateOfBirth = user.PersonalData.DateOfBirth,
                     SSN = user.PersonalData.SSN,
                     Gender = user.PersonalData.Gender,
-                    Emails = UserEmails,
-                    PhoneNumbers = UserPhoneNumbers,
+                    Email = user.PersonalData.Email,
+                    PhoneNumber = user.PersonalData.PhoneNumber,
                     Role = user.Roles.First().Role,
                     IsExpired = user.IsExpired,
                     IsDisabled = user.IsDisabled,

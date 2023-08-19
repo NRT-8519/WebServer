@@ -20,8 +20,6 @@ namespace WebServer.Services
         {
             return await context.Patients
                 .Include(u => u.PersonalData)
-                .Include(u => u.Emails)
-                .Include(u => u.PhoneNumbers)
                 .Include(u => u.Roles)
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
@@ -35,8 +33,6 @@ namespace WebServer.Services
         {
             return await context.Patients
                 .Include(u => u.PersonalData)
-                .Include(u => u.Emails)
-                .Include(u => u.PhoneNumbers)
                 .Include(u => u.Roles)
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
@@ -49,8 +45,6 @@ namespace WebServer.Services
         {
             return await context.Patients
                 .Include(u => u.PersonalData)
-                .Include(u => u.Emails)
-                .Include(u => u.PhoneNumbers)
                 .Include(u => u.Roles)
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
@@ -77,24 +71,6 @@ namespace WebServer.Services
         {
             try
             {
-                List<UserEmail> userEmails = new List<UserEmail>();
-                foreach (var email in entity.Emails)
-                {
-                    if (email != null && email.Email != "")
-                    {
-                        userEmails.Add(new UserEmail { UserUUID = entity.UUID, Email = email.Email });
-
-                    }
-                }
-
-                List<UserPhoneNumber> userPhoneNumbers = new List<UserPhoneNumber>();
-                foreach (var phoneNumber in entity.PhoneNumbers)
-                {
-                    if (phoneNumber != null && phoneNumber.PhoneNumber != "")
-                    {
-                        userPhoneNumbers.Add(new UserPhoneNumber { UserUUID = entity.UUID, PhoneNumber = phoneNumber.PhoneNumber });
-                    }
-                }
                 Patient p = await FindByUUID(entity.UUID);
                 p.UUID = entity.UUID;
                 p.DoctorUUID = entity.AssignedDoctor.UUID;
@@ -105,8 +81,8 @@ namespace WebServer.Services
                 p.PersonalData.DateOfBirth = entity.DateOfBirth;
                 p.PersonalData.SSN = entity.SSN;
                 p.PersonalData.Gender = entity.Gender;
-                p.Emails = userEmails;
-                p.PhoneNumbers = userPhoneNumbers;
+                p.PersonalData.Email = entity.Email;
+                p.PersonalData.PhoneNumber = entity.PhoneNumber;
 
                 p.IsDisabled = entity.IsDisabled;
                 p.IsExpired = entity.IsExpired;

@@ -48,19 +48,6 @@ namespace WebServer.Models.UserData
         [ForeignKey("UUID")]
         public PersonalData PersonalData { get; set; }
 
-
-        /// <summary>
-        /// List of user's emails. One user can have more than one email.
-        /// </summary>
-        [ForeignKey("UserUUID")]
-        public List<UserEmail> Emails { get; set; } = new List<UserEmail>();
-
-        /// <summary>
-        /// User's phone numbers. One user can have more than one phone number.
-        /// </summary>
-        [ForeignKey("UserUUID")]
-        public List<UserPhoneNumber> PhoneNumbers { get; set; } = new List<UserPhoneNumber>();
-
         /// <summary>
         /// Specifies whether a user's account is disabled.
         /// </summary>

@@ -18,40 +18,40 @@ namespace WebServer.Services
 
         public async Task<IEnumerable<User>> FindAll()
         {
-            return await context.Users.Include(u => u.PersonalData).Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).ToListAsync();
+            return await context.Users.Include(u => u.PersonalData).Include(u => u.Roles).ToListAsync();
         }
 
         public async Task<IEnumerable<User>> FindAllDisabled()
         {
-            return await context.Users.Include(u => u.PersonalData).Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).Where(u => u.IsDisabled).ToListAsync();
+            return await context.Users.Include(u => u.PersonalData).Include(u => u.Roles).Where(u => u.IsDisabled).ToListAsync();
         }
         public async Task<IEnumerable<User>> FindAllExpired()
         {
-            return await context.Users.Include(u => u.PersonalData).Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).Where(u => u.IsExpired).ToListAsync();
+            return await context.Users.Include(u => u.PersonalData).Include(u => u.Roles).Where(u => u.IsExpired).ToListAsync();
         }
         public async Task<User> FindById(int id)
         {
-            return await context.Users.Include(u => u.PersonalData).Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.Id == id);
+            return await context.Users.Include(u => u.PersonalData).Include(u => u.Roles).SingleOrDefaultAsync(x => x.Id == id);
         }
         public async Task<User> FindByUUID(Guid UUID)
         {
-            return await context.Users.Include(u => u.PersonalData).Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.UUID.Equals(UUID));
+            return await context.Users.Include(u => u.PersonalData).Include(u => u.Roles).SingleOrDefaultAsync(x => x.UUID.Equals(UUID));
         }
         public async Task<User> FindByUsername(string username)
         {
-            return await context.Users.Include(u => u.PersonalData).Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.Username.Equals(username));
+            return await context.Users.Include(u => u.PersonalData).Include(u => u.Roles).SingleOrDefaultAsync(x => x.Username.Equals(username));
         }
         public async Task<User> FindByEmail(string email)
         {
-            return await context.Users.Include(u => u.PersonalData).Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.Emails.Any(e => e.Email.Equals(email)));
+            return await context.Users.Include(u => u.PersonalData).Include(u => u.Roles).SingleOrDefaultAsync(x => x.PersonalData.Email.Equals(email));
         }
         public async Task<User> FindByPhoneNumber(string phoneNo)
         {
-            return await context.Users.Include(u => u.PersonalData).Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).SingleOrDefaultAsync(x => x.PhoneNumbers.Any(e => e.PhoneNumber.Equals(phoneNo)));
+            return await context.Users.Include(u => u.PersonalData).Include(u => u.Roles).SingleOrDefaultAsync(x => x.PersonalData.PhoneNumber.Equals(phoneNo));
         }
         public async Task<IEnumerable<User>> FindByRole(string role)
         {
-            return await context.Users.Include(u => u.PersonalData).Include(u => u.Emails).Include(u => u.PhoneNumbers).Include(u => u.Roles).Where(x => x.Roles.Any(e => e.Role.Equals(role))).ToListAsync();
+            return await context.Users.Include(u => u.PersonalData).Include(u => u.Roles).Where(x => x.Roles.Any(e => e.Role.Equals(role))).ToListAsync();
         }
         public async Task<int> Insert(User entity)
         {

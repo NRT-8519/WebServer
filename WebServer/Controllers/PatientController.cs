@@ -111,19 +111,6 @@ namespace WebServer.Controllers
             
             if (result != default)
             {
-                List<EmailDTO> Emails = new();
-                List<PhoneNumberDTO> PhoneNumbers = new();
-
-                foreach(UserEmail email in result.Emails)
-                {
-                    Emails.Add(new EmailDTO { Email = email.Email });
-                }
-
-                foreach (UserPhoneNumber phone in result.PhoneNumbers)
-                {
-                    PhoneNumbers.Add(new PhoneNumberDTO { PhoneNumber = phone.PhoneNumber });
-                }
-
                 PatientDetailsDTO patient = new()
                 {
                     UUID = result.PatientUUID,
@@ -131,11 +118,11 @@ namespace WebServer.Controllers
                     MiddleName = result.PersonalData.MiddleName,
                     LastName = result.PersonalData.LastName,
                     Title = result.PersonalData.Title,
-                    Emails = Emails,
-                    PhoneNumbers = PhoneNumbers,
                     DateOfBirth = result.PersonalData.DateOfBirth,
                     Gender = result.PersonalData.Gender,
                     SSN = result.PersonalData.SSN,
+                    Email = result.PersonalData.Email,
+                    PhoneNumber = result.PersonalData.PhoneNumber,
                     PasswordExpiryDate = result.PasswordExpiryDate,
                     IsDisabled = result.IsDisabled,
                     IsExpired = result.IsExpired,

@@ -22,7 +22,7 @@ namespace WebServer.Authentication
 
         public JWTToken Authenticate(Login login)
         {
-            User user = userContext.Users.Include(u => u.PersonalData).Include(u => u.Roles).FirstOrDefault(u => u.Username.Equals(login.Username) && u.Password.Equals(login.Password));
+            User user = userContext.Users.FirstOrDefault(u => u.Username.Equals(login.Username) && u.Password.Equals(login.Password));
 
             if (user == null || user == default)
             {
@@ -37,8 +37,8 @@ namespace WebServer.Authentication
                     Subject = new ClaimsIdentity(new Claim[]
                     {
                         new Claim(ClaimTypes.Name, user.Username),
-                        new Claim(ClaimTypes.NameIdentifier, user.PersonalData.FirstName + " " + (user.PersonalData.MiddleName != null ? user.PersonalData.MiddleName.First() + ". " : "") + user.PersonalData.LastName),
-                        new Claim(ClaimTypes.Role, user.Roles.First().Role),
+                        new Claim(ClaimTypes.NameIdentifier, user.FirstName + " " + (user.MiddleName != null ? user.MiddleName.First() + ". " : "") + user.LastName),
+                        new Claim(ClaimTypes.Role, user.Role),
                         new Claim(JwtRegisteredClaimNames.Jti, user.UUID.ToString()),
                         new Claim(JwtRegisteredClaimNames.Aud, configuration["Jwt:Audience"]),
                         new Claim(JwtRegisteredClaimNames.Iss, configuration["Jwt:Issuer"])

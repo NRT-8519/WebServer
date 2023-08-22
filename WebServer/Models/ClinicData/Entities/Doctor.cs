@@ -8,10 +8,6 @@ namespace WebServer.Models.ClinicData.Entities
     [Table("doctor")]
     public class Doctor : User
     {
-        [Column("uuid")]
-        [Required]
-        public Guid DoctorUUID { get; set; }
-
         [Required]
         [ForeignKey("DoctorUUID")]
         public List<Notes> Notes {  get; set; } = new List<Notes>();

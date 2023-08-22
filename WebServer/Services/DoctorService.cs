@@ -17,38 +17,32 @@ namespace WebServer.Services
         public async Task<IEnumerable<Doctor>> FindAll()
         {
             return await context.Doctors
-                .Include(u => u.PersonalData)
-                .Include(u => u.Roles)
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
                 .Include(d => d.Schedules)
                 .Include(d => d.TimeOffs)
                 .Include(d => d.WorkShifts)
-                .Where(x => x.Roles.Any(r => r.Role.Equals("DOCTOR"))).ToListAsync();
+                .Where(x => x.Role.Equals("DOCTOR")).ToListAsync();
         }
         public async Task<Doctor> FindById(int id)
         {
             return await context.Doctors
-                .Include(u => u.PersonalData)
-                .Include(u => u.Roles)
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
                 .Include(d => d.Schedules)
                 .Include(d => d.TimeOffs)
                 .Include(d => d.WorkShifts)
-                .Where(x => x.Id == id && x.Roles.Any(r => r.Role.Equals("DOCTOR"))).SingleOrDefaultAsync();
+                .Where(x => x.Id == id && x.Role.Equals("DOCTOR")).SingleOrDefaultAsync();
         }
         public async Task<Doctor> FindByUUID(Guid UUID)
         {
             return await context.Doctors
-                .Include(u => u.PersonalData)
-                .Include(u => u.Roles)
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
                 .Include(d => d.Schedules)
                 .Include(d => d.TimeOffs)
                 .Include(d => d.WorkShifts)
-                .Where(x => x.UUID.Equals(UUID) && x.Roles.Any(r => r.Role.Equals("DOCTOR"))).SingleOrDefaultAsync();
+                .Where(x => x.UUID.Equals(UUID) && x.Role.Equals("DOCTOR")).SingleOrDefaultAsync();
         }
 
         public async Task<int> Insert(Doctor entity)

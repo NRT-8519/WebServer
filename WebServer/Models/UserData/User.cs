@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using WebServer.Models.UserData.Relations;
 
 namespace WebServer.Models.UserData
 {
@@ -40,14 +39,6 @@ namespace WebServer.Models.UserData
         [JsonIgnore]
         public string Password { get; set; }
 
-
-        /// <summary>
-        /// User's personal data, such as first name, last name, date of birth etc.
-        /// </summary>
-
-        [ForeignKey("UUID")]
-        public PersonalData PersonalData { get; set; }
-
         /// <summary>
         /// Specifies whether a user's account is disabled.
         /// </summary>
@@ -66,10 +57,33 @@ namespace WebServer.Models.UserData
         [Column("password_expiry")]
         public DateTime PasswordExpiryDate { get; set; }
 
-        /// <summary>
-        /// List of user roles. One user can have only one role.
-        /// </summary>
-        [ForeignKey("UserUUID")]
-        public List<UserRole> Roles { get; set; } = new List<UserRole>();
+        public string Role { get; set; }
+
+        [Column("first_name")]
+        public string FirstName { get; set; }
+
+        [Column("middle_name")]
+        public string MiddleName { get; set; }
+
+        [Column("last_name")]
+        public string LastName { get; set; }
+
+        [Column("title")]
+        public string Title { get; set; }
+
+        [Column("date_of_birth")]
+        public DateOnly DateOfBirth { get; set; }
+
+        [Column("ssn")]
+        public string SSN { get; set; }
+
+        [Column("gender")]
+        public char Gender { get; set; }
+
+        [Column("email")]
+        public string Email { get; set; }
+
+        [Column("phone_number")]
+        public string PhoneNumber { get; set; }
     }
 }

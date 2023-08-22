@@ -20,11 +20,20 @@ namespace WebServer.Services.Contexts
             {
                 entity.HasKey(u => u.UUID);
                 entity.Property(u => u.Username).IsRequired();
-                entity.Property(u => u.Password).IsRequired();
+                entity.Property(u => u.Password);
+                entity.Property(u => u.FirstName).IsRequired();
+                entity.Property(u => u.MiddleName);
+                entity.Property(u => u.LastName).IsRequired();
+                entity.Property(u => u.Title);
+                entity.Property(u => u.DateOfBirth).IsRequired();
+                entity.Property(u => u.SSN).IsRequired();
+                entity.Property(u => u.Gender).IsRequired();
+                entity.Property(u => u.Email).IsRequired();
+                entity.Property(u => u.PhoneNumber).IsRequired();
                 entity.Property(u => u.IsDisabled).IsRequired();
                 entity.Property(u => u.IsExpired).IsRequired();
                 entity.Property(u => u.PasswordExpiryDate).IsRequired();
-                entity.HasMany(u => u.Roles).WithOne().HasForeignKey(r => r.UserUUID).IsRequired();
+                entity.Property(u => u.Role).IsRequired();
             });
 
             modelBuilder.Entity<Doctor>(entity =>

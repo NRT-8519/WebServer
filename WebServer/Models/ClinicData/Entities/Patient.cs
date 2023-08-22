@@ -7,10 +7,6 @@ namespace WebServer.Models.ClinicData.Entities
     [Table("patient")]
     public class Patient : User
     {
-        [Column("uuid")]
-        [Required]
-        public Guid PatientUUID { get; set; }
-
         [Column("assigned_doctor_uuid")]
         [Required]
         public Guid DoctorUUID { get; set; }

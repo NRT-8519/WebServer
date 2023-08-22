@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using WebServer.Authentication;
 using WebServer.Models;
-using WebServer.Models.ClinicData.Entities;
 using WebServer.Models.DTOs;
 using WebServer.Models.UserData;
-using WebServer.Models.UserData.Relations;
 using WebServer.Services;
 
 namespace WebServer.Controllers
@@ -33,16 +31,16 @@ namespace WebServer.Controllers
                 DTOs.Add(new UserDTO { 
                     UUID = user.UUID, 
                     UserName = user.Username, 
-                    FirstName = user.PersonalData.FirstName, 
-                    MiddleName = user.PersonalData.MiddleName, 
-                    LastName = user.PersonalData.LastName, 
-                    Title = user.PersonalData.Title, 
-                    DateOfBirth = user.PersonalData.DateOfBirth, 
-                    SSN = user.PersonalData.SSN, 
-                    Gender = user.PersonalData.Gender, 
-                    Email = user.PersonalData.Email, 
-                    PhoneNumber = user.PersonalData.PhoneNumber, 
-                    Role = user.Roles.First().Role, 
+                    FirstName = user.FirstName, 
+                    MiddleName = user.MiddleName, 
+                    LastName = user.LastName, 
+                    Title = user.Title, 
+                    DateOfBirth = user.DateOfBirth, 
+                    SSN = user.SSN, 
+                    Gender = user.Gender, 
+                    Email = user.Email, 
+                    PhoneNumber = user.PhoneNumber, 
+                    Role = user.Role, 
                     IsExpired = user.IsExpired, 
                     IsDisabled = user.IsDisabled, 
                     PasswordExpiry = user.PasswordExpiryDate
@@ -72,16 +70,16 @@ namespace WebServer.Controllers
                 {
                     UUID = user.UUID,
                     UserName = user.Username,
-                    FirstName = user.PersonalData.FirstName,
-                    MiddleName = user.PersonalData.MiddleName,
-                    LastName = user.PersonalData.LastName,
-                    Title = user.PersonalData.Title,
-                    DateOfBirth = user.PersonalData.DateOfBirth,
-                    SSN = user.PersonalData.SSN,
-                    Gender = user.PersonalData.Gender,
-                    Email = user.PersonalData.Email,
-                    PhoneNumber = user.PersonalData.PhoneNumber,
-                    Role = user.Roles.First().Role,
+                    FirstName = user.FirstName,
+                    MiddleName = user.MiddleName,
+                    LastName = user.LastName,
+                    Title = user.Title,
+                    DateOfBirth = user.DateOfBirth,
+                    SSN = user.SSN,
+                    Gender = user.Gender,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    Role = user.Role,
                     IsExpired = user.IsExpired,
                     IsDisabled = user.IsDisabled,
                     PasswordExpiry = user.PasswordExpiryDate
@@ -104,16 +102,16 @@ namespace WebServer.Controllers
                 {
                     UUID = user.UUID,
                     UserName = user.Username,
-                    FirstName = user.PersonalData.FirstName,
-                    MiddleName = user.PersonalData.MiddleName,
-                    LastName = user.PersonalData.LastName,
-                    Title = user.PersonalData.Title,
-                    DateOfBirth = user.PersonalData.DateOfBirth,
-                    SSN = user.PersonalData.SSN,
-                    Gender = user.PersonalData.Gender,
-                    Email = user.PersonalData.Email,
-                    PhoneNumber = user.PersonalData.PhoneNumber,
-                    Role = user.Roles.First().Role,
+                    FirstName = user.FirstName,
+                    MiddleName = user.MiddleName,
+                    LastName = user.LastName,
+                    Title = user.Title,
+                    DateOfBirth = user.DateOfBirth,
+                    SSN = user.SSN,
+                    Gender = user.Gender,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    Role = user.Role,
                     IsExpired = user.IsExpired,
                     IsDisabled = user.IsDisabled,
                     PasswordExpiry = user.PasswordExpiryDate

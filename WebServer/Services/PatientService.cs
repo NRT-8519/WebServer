@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WebServer.Controllers;
+using WebServer.Features;
 using WebServer.Models.ClinicData.Entities;
 using WebServer.Models.DTOs;
-using WebServer.Models.UserData.Relations;
 using WebServer.Services.Contexts;
 
 namespace WebServer.Services
@@ -19,46 +20,64 @@ namespace WebServer.Services
         public async Task<IEnumerable<Patient>> FindAll()
         {
             return await context.Patients
-                .Include(u => u.PersonalData)
-                .Include(u => u.Roles)
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
                 .Include(d => d.Schedules)
                 .Include(p => p.AssignedDoctor)
-                .Include(p => p.AssignedDoctor.PersonalData)
-                .Where(x => x.Roles.Any(r => r.Role.Equals("PATIENT"))).ToListAsync();
+                .Where(x => x.Role.Equals("PATIENT")).ToListAsync();
         }
 
         public async Task<Patient> FindById(int id)
         {
             return await context.Patients
-                .Include(u => u.PersonalData)
-                .Include(u => u.Roles)
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
                 .Include(d => d.Schedules)
                 .Include(p => p.AssignedDoctor)
-                .Include(p => p.AssignedDoctor.PersonalData)
-                .Where(x => x.Id == id && x.Roles.Any(r => r.Role.Equals("PATIENT"))).SingleOrDefaultAsync();
+                .Where(x => x.Id == id && x.Role.Equals("PATIENT")).SingleOrDefaultAsync();
         }
         public async Task<Patient> FindByUUID(Guid UUID)
         {
-            return await context.Patients
-                .Include(u => u.PersonalData)
-                .Include(u => u.Roles)
+            Patient p = await context.Patients
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
                 .Include(d => d.Schedules)
                 .Include(p => p.AssignedDoctor)
-                .Include(p => p.AssignedDoctor.PersonalData)
-                .Where(x => x.UUID.Equals(UUID) && x.Roles.Any(r => r.Role.Equals("PATIENT"))).SingleOrDefaultAsync();
+                .Where(x => x.UUID.Equals(UUID) && x.Role.Equals("PATIENT")).SingleOrDefaultAsync();
+
+
+            return p;
         }
 
-        public async Task<int> Insert(Patient entity)
+        public async Task<int> Insert(PatientDetailsDTO entity)
         {
             try
             {
-                context.Add(entity);
+                Guid UUID = Guid.NewGuid();
+
+                Patient p = new()
+                {
+                    UUID = UUID,
+                    FirstName = entity.FirstName,
+                    MiddleName = entity.MiddleName,
+                    LastName = entity.LastName,
+                    Title = entity.Title,
+                    DateOfBirth = entity.DateOfBirth,
+                    SSN = entity.SSN,
+                    Gender = entity.Gender,
+                    Email = entity.Email,
+                    PhoneNumber = entity.PhoneNumber,
+                    Username = entity.Username,
+                    Password = Password.Generate(15, 5),
+                    IsDisabled = false,
+                    IsExpired = false,
+                    AssignedDoctor = null,
+                    PasswordExpiryDate = DateTime.Now.AddMonths(6),
+                    Role = "PATIENT"
+                };
+
+                context.Add(p);
+
                 return await context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException exception)
@@ -74,15 +93,20 @@ namespace WebServer.Services
                 Patient p = await FindByUUID(entity.UUID);
                 p.UUID = entity.UUID;
                 p.DoctorUUID = entity.AssignedDoctor.UUID;
-                p.PersonalData.FirstName = entity.FirstName;
-                p.PersonalData.MiddleName = entity.MiddleName;
-                p.PersonalData.LastName = entity.LastName;
-                p.PersonalData.Title = entity.Title;
-                p.PersonalData.DateOfBirth = entity.DateOfBirth;
-                p.PersonalData.SSN = entity.SSN;
-                p.PersonalData.Gender = entity.Gender;
-                p.PersonalData.Email = entity.Email;
-                p.PersonalData.PhoneNumber = entity.PhoneNumber;
+                p.FirstName = entity.FirstName;
+                p.MiddleName = entity.MiddleName;
+                p.LastName = entity.LastName;
+                p.Username = entity.Username;
+                if (p.Password != null && !p.Password.Equals(""))
+                {
+                    p.Password = entity.Password;
+                }
+                p.Title = entity.Title;
+                p.DateOfBirth = entity.DateOfBirth;
+                p.SSN = entity.SSN;
+                p.Gender = entity.Gender;
+                p.Email = entity.Email;
+                p.PhoneNumber = entity.PhoneNumber;
 
                 p.IsDisabled = entity.IsDisabled;
                 p.IsExpired = entity.IsExpired;

@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebServer.Authentication;
 using WebServer.Models.ClinicData.Entities;
 using WebServer.Models.DTOs;
-using WebServer.Models.UserData;
-using WebServer.Models.UserData.Relations;
 using WebServer.Services;
 
 namespace WebServer.Controllers
@@ -30,16 +27,16 @@ namespace WebServer.Controllers
                 {
                     DTOs.Add(new PatientBasicDTO
                     {
-                        FirstName = patient.PersonalData.FirstName,
-                        MiddleName = patient.PersonalData.MiddleName,
-                        LastName = patient.PersonalData.LastName,
-                        UUID = patient.PatientUUID,
+                        UUID = patient.UUID,
+                        FirstName = patient.FirstName,
+                        MiddleName = patient.MiddleName,
+                        LastName = patient.LastName,
                         AssignedDoctor = new DoctorBasicDTO
                         {
-                            FirstName = patient.AssignedDoctor.PersonalData.FirstName,
-                            MiddleName = patient.AssignedDoctor.PersonalData.MiddleName,
-                            LastName = patient.AssignedDoctor.PersonalData.LastName,
-                            UUID = patient.AssignedDoctor.DoctorUUID
+                            FirstName = patient.AssignedDoctor.FirstName,
+                            MiddleName = patient.AssignedDoctor.MiddleName,
+                            LastName = patient.AssignedDoctor.LastName,
+                            UUID = patient.AssignedDoctor.UUID
                         }
                     });
                 }
@@ -63,19 +60,26 @@ namespace WebServer.Controllers
                 List<PatientBasicDTO> DTOs = new();
                 foreach (var patient in result)
                 {
-                    DTOs.Add(new PatientBasicDTO 
-                    { 
-                        FirstName = patient.PersonalData.FirstName, 
-                        MiddleName = patient.PersonalData.MiddleName,
-                        LastName = patient.PersonalData.LastName,
-                        UUID = patient.PatientUUID,
-                        AssignedDoctor = new DoctorBasicDTO
+                    DoctorBasicDTO doctor = null;
+                    if (patient.AssignedDoctor != null)
+                    {
+                        doctor = new DoctorBasicDTO
                         {
-                            FirstName = patient.AssignedDoctor.PersonalData.FirstName,
-                            MiddleName = patient.AssignedDoctor.PersonalData.MiddleName,
-                            LastName = patient.AssignedDoctor.PersonalData.LastName,
-                            UUID = patient.AssignedDoctor.DoctorUUID
-                        }
+                            FirstName = patient.AssignedDoctor.FirstName,
+                            MiddleName = patient.AssignedDoctor.MiddleName,
+                            LastName = patient.AssignedDoctor.LastName,
+                            Username = patient.AssignedDoctor.Username,
+                            UUID = patient.AssignedDoctor.UUID
+                        };
+                    }
+                    DTOs.Add(new PatientBasicDTO
+                    {
+                        FirstName = patient.FirstName,
+                        MiddleName = patient.MiddleName,
+                        LastName = patient.LastName,
+                        Username = patient.Username,
+                        UUID = patient.UUID,
+                        AssignedDoctor = doctor
                     });
                 }
                 logger.LogInformation("Fetched all patients basic information.");
@@ -113,25 +117,27 @@ namespace WebServer.Controllers
             {
                 PatientDetailsDTO patient = new()
                 {
-                    UUID = result.PatientUUID,
-                    FirstName = result.PersonalData.FirstName,
-                    MiddleName = result.PersonalData.MiddleName,
-                    LastName = result.PersonalData.LastName,
-                    Title = result.PersonalData.Title,
-                    DateOfBirth = result.PersonalData.DateOfBirth,
-                    Gender = result.PersonalData.Gender,
-                    SSN = result.PersonalData.SSN,
-                    Email = result.PersonalData.Email,
-                    PhoneNumber = result.PersonalData.PhoneNumber,
+                    UUID = result.UUID,
+                    FirstName = result.FirstName,
+                    MiddleName = result.MiddleName,
+                    LastName = result.LastName,
+                    Username = result.Username,
+                    Title = result.Title,
+                    DateOfBirth = result.DateOfBirth,
+                    Gender = result.Gender,
+                    SSN = result.SSN,
+                    Email = result.Email,
+                    PhoneNumber = result.PhoneNumber,
                     PasswordExpiryDate = result.PasswordExpiryDate,
                     IsDisabled = result.IsDisabled,
                     IsExpired = result.IsExpired,
                     AssignedDoctor = new DoctorBasicDTO
                     {
-                        FirstName = result.AssignedDoctor.PersonalData.FirstName,
-                        MiddleName = result.AssignedDoctor.PersonalData.MiddleName,
-                        LastName = result.AssignedDoctor.PersonalData.LastName,
-                        UUID = result.AssignedDoctor.DoctorUUID
+                        FirstName = result.AssignedDoctor.FirstName,
+                        MiddleName = result.AssignedDoctor.MiddleName,
+                        LastName = result.AssignedDoctor.LastName,
+                        Username = result.AssignedDoctor.Username,
+                        UUID = result.AssignedDoctor.UUID
                     }
                 };
                 return Ok(patient);
@@ -144,7 +150,7 @@ namespace WebServer.Controllers
 
         [HttpPost("add")]
         [Authorize(Roles = "ADMINISTRATOR")]
-        public override async Task<IActionResult> Add([FromBody] Patient model)
+        public override async Task<IActionResult> Add([FromBody] PatientDetailsDTO model)
         {
             var user = await ((PatientService)service).Insert(model);
 

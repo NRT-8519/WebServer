@@ -11,11 +11,11 @@ namespace WebServer.Controllers
     [Authorize]
     [Route("api/users")]
     [ApiController]
-    public class UserController : Controller<User, User, User>
+    public class UserController : Controller<User, UserBasicDTO, UserDetailsDTO>
     {
         private readonly ITokenService<JWTToken> tokenService;
 
-        public UserController(ILogger<UserController> logger, IDbService<User, User, User> service, ITokenService<JWTToken> tokenService) : base(logger, service)
+        public UserController(ILogger<UserController> logger, IDbService<User, UserBasicDTO, UserDetailsDTO> service, ITokenService<JWTToken> tokenService) : base(logger, service)
         {
             this.tokenService = tokenService;
         }
@@ -24,13 +24,13 @@ namespace WebServer.Controllers
         [Authorize(Roles = "ADMINISTRATOR")]
         public override async Task<IActionResult> GetAll()
         {
-            var result = await service.FindAll();
-            List<UserDTO> DTOs = new List<UserDTO>();
+            var result = await ((UserService)service).FindAll();
+            List<UserDetailsDTO> DTOs = new();
             foreach (User user in result)
             {
-                DTOs.Add(new UserDTO { 
+                DTOs.Add(new() { 
                     UUID = user.UUID, 
-                    UserName = user.Username, 
+                    Username = user.Username, 
                     FirstName = user.FirstName, 
                     MiddleName = user.MiddleName, 
                     LastName = user.LastName, 
@@ -39,14 +39,43 @@ namespace WebServer.Controllers
                     SSN = user.SSN, 
                     Gender = user.Gender, 
                     Email = user.Email, 
-                    PhoneNumber = user.PhoneNumber, 
-                    Role = user.Role, 
+                    PhoneNumber = user.PhoneNumber,
                     IsExpired = user.IsExpired, 
                     IsDisabled = user.IsDisabled, 
-                    PasswordExpiry = user.PasswordExpiryDate
+                    PasswordExpiryDate = user.PasswordExpiryDate
                 });
             }
             if (result.Any()) 
+            {
+                logger.LogInformation("Fetched all users.");
+                return Ok(DTOs);
+            }
+            else
+            {
+                logger.LogInformation("User database empty.");
+                return NoContent();
+            }
+        }
+
+        [HttpGet("all/basic")]
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> GetAllPaged(string sortOrder, string searchQuery, string currentFilter, int? pageNumber, int pageSize)
+        {
+            var result = await ((UserService)service).FindAllAdministratorsPaged(sortOrder, searchQuery, currentFilter, pageNumber, pageSize);
+            PaginatedResultDTO<UserBasicDTO> DTOs = new();
+            foreach (User user in result)
+            {
+                DTOs.items.Add(new()
+                {
+                    UUID = user.UUID,
+                    Username = user.Username,
+                    FirstName = user.FirstName,
+                    MiddleName = user.MiddleName,
+                    LastName = user.LastName,
+                    Email = user.Email
+                });
+            }
+            if (result.Any())
             {
                 logger.LogInformation("Fetched all users.");
                 return Ok(DTOs);
@@ -66,10 +95,10 @@ namespace WebServer.Controllers
             if (user != default) 
             {
 
-                return Ok(new UserDTO
+                return Ok(new UserDetailsDTO
                 {
                     UUID = user.UUID,
-                    UserName = user.Username,
+                    Username = user.Username,
                     FirstName = user.FirstName,
                     MiddleName = user.MiddleName,
                     LastName = user.LastName,
@@ -79,10 +108,9 @@ namespace WebServer.Controllers
                     Gender = user.Gender,
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
-                    Role = user.Role,
                     IsExpired = user.IsExpired,
                     IsDisabled = user.IsDisabled,
-                    PasswordExpiry = user.PasswordExpiryDate
+                    PasswordExpiryDate = user.PasswordExpiryDate
                 });
             }
             else
@@ -95,13 +123,13 @@ namespace WebServer.Controllers
         [Authorize(Roles = "ADMINISTRATOR")]
         public override async Task<IActionResult> GetByUUID(Guid UUID)
         {
-            var user = await service.FindByUUID(UUID);
+            var user = await ((UserService)service).FindAdministratorByUUID(UUID);
             if (user != default)
             {
-                return Ok(new UserDTO
+                return Ok(new UserDetailsDTO
                 {
                     UUID = user.UUID,
-                    UserName = user.Username,
+                    Username = user.Username,
                     FirstName = user.FirstName,
                     MiddleName = user.MiddleName,
                     LastName = user.LastName,
@@ -111,10 +139,9 @@ namespace WebServer.Controllers
                     Gender = user.Gender,
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
-                    Role = user.Role,
                     IsExpired = user.IsExpired,
                     IsDisabled = user.IsDisabled,
-                    PasswordExpiry = user.PasswordExpiryDate
+                    PasswordExpiryDate = user.PasswordExpiryDate
                 });
             }
             else
@@ -125,9 +152,9 @@ namespace WebServer.Controllers
 
         [HttpPost("add")]
         [Authorize(Roles = "ADMINISTRATOR")]
-        public override async Task<IActionResult> Add([FromBody] User model)
+        public override async Task<IActionResult> Add([FromBody] UserDetailsDTO model)
         {
-            var user = await service.Insert(model);
+            var user = await ((UserService)service).InsertAdministrator(model);
 
             if (user != 0)
             {
@@ -141,9 +168,9 @@ namespace WebServer.Controllers
 
         [HttpPut("edit")]
         [Authorize(Roles = "ADMINISTRATOR")]
-        public override async Task<IActionResult> Edit([FromBody] User model)
+        public override async Task<IActionResult> Edit([FromBody] UserDetailsDTO model)
         {
-            var user = await service.Update(model);
+            var user = await ((UserService)service).UpdateAdministrator(model);
 
             if (user != 0)
             {
@@ -157,7 +184,7 @@ namespace WebServer.Controllers
 
         [HttpDelete("remove")]
         [Authorize(Roles = "ADMINISTRATOR")]
-        public override async Task<IActionResult> Remove([FromBody] User model)
+        public override async Task<IActionResult> Remove([FromBody] UserBasicDTO model)
         {
             var user = await service.Delete(model);
 

@@ -39,7 +39,7 @@ builder.Services.AddDbContextPool<MedicineContext>(options =>
     options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
 });
 
-builder.Services.AddScoped<IDbService<User, User, User>, UserService>();
+builder.Services.AddScoped<IDbService<User, UserBasicDTO, UserDetailsDTO>, UserService>();
 builder.Services.AddScoped<IDbService<Doctor, UserBasicDTO, DoctorDetailsDTO>, DoctorService>();
 builder.Services.AddScoped<IDbService<Patient, UserBasicDTO, PatientDetailsDTO>, PatientService>();
 builder.Services.AddScoped<IDbService<Company, Company, Company>, CompanyService>();

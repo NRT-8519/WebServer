@@ -10,7 +10,7 @@ namespace WebServer.Models.ClinicData.Entities
     {
         [Required]
         [ForeignKey("DoctorUUID")]
-        public List<Notes> Notes {  get; set; } = new List<Notes>();
+        public List<Notes> Notes { get; set; } = new List<Notes>();
 
         [Required]
         [ForeignKey("DoctorUUID")]
@@ -27,5 +27,11 @@ namespace WebServer.Models.ClinicData.Entities
         [Required]
         [ForeignKey("DoctorUUID")]
         public List<WorkShift> WorkShifts { get; set; } = new List<WorkShift>();
+
+        [Column("area_of_expertise")]
+        public string AreaOfExpertise { get; set; }
+
+        [Column("room_number")]
+        public int RoomNumber { get; set; }
     }
 }

@@ -172,7 +172,7 @@ namespace WebServer.Controllers
 
         [HttpDelete("remove")]
         [Obsolete]
-        public override async Task<IActionResult> Remove(PatientDetailsDTO entity)
+        public override async Task<IActionResult> Remove(UserBasicDTO entity)
         {
             throw new NotImplementedException();
         }

@@ -20,7 +20,7 @@ namespace WebServer.Controllers
         public abstract Task<IActionResult> GetByUUID(Guid UUID);
         public abstract Task<IActionResult> Add(D entity);
         public abstract Task<IActionResult> Edit(D entity);
-        public abstract Task<IActionResult> Remove(D entity);
+        public abstract Task<IActionResult> Remove(B entity);
         public abstract Task<IActionResult> RemoveById(int id);
         public abstract Task<IActionResult> RemoveByUUID(Guid UUID);
     }

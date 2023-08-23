@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebServer.Controllers;
 using WebServer.Features;
 using WebServer.Models.ClinicData.Entities;
@@ -8,7 +9,7 @@ using WebServer.Services.Contexts;
 namespace WebServer.Services
 {
 
-    public class PatientService : IDbService<Patient, PatientBasicDTO, PatientDetailsDTO>
+    public class PatientService : IDbService<Patient, UserBasicDTO, PatientDetailsDTO>
     {
         private readonly UserContext context;
 
@@ -25,6 +26,41 @@ namespace WebServer.Services
                 .Include(d => d.Schedules)
                 .Include(p => p.AssignedDoctor)
                 .Where(x => x.Role.Equals("PATIENT")).ToListAsync();
+        }
+
+        public async Task<PaginatedList<Patient>> FindAllPaged(string sortOrder, string searchQuery, string currentFilter, int? pageNumber, int pageSize)
+        {
+            var patients = from p in context.Patients select p;
+
+            if (searchQuery != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchQuery = currentFilter;
+            }
+
+            if(!String.IsNullOrEmpty(searchQuery))
+            {
+                patients = patients.Where(p =>
+                    p.FirstName.Contains(searchQuery) ||
+                    p.MiddleName.Contains(searchQuery) ||
+                    p.LastName.Contains(searchQuery) ||
+                    p.Title.Contains(searchQuery) ||
+                    p.Email.Contains(searchQuery) ||
+                    p.PhoneNumber.Contains(searchQuery) ||
+                    p.Username.Contains(searchQuery) ||
+                    p.UUID.Equals(searchQuery)
+                );
+            }
+
+            return await PaginatedList<Patient>.CreateAsync(patients
+                .Include(d => d.Notes)
+                .Include(d => d.Prescriptions)
+                .Include(d => d.Schedules)
+                .Include(p => p.AssignedDoctor)
+                .AsNoTracking(), pageNumber ?? 1, pageSize);
         }
 
         public async Task<Patient> FindById(int id)
@@ -122,7 +158,7 @@ namespace WebServer.Services
             }
         }
 
-        public Task<int> Delete(PatientBasicDTO entity)
+        public Task<int> Delete(UserBasicDTO entity)
         {
             throw new NotImplementedException();
         }

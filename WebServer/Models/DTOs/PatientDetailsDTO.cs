@@ -17,6 +17,6 @@
         public DateTime PasswordExpiryDate { get; set; }
         public bool IsDisabled { get; set; }
         public bool IsExpired { get; set; }
-        public DoctorBasicDTO AssignedDoctor { get; set; }
+        public UserBasicDTO AssignedDoctor { get; set; }
     }
 }

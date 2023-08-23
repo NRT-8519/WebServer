@@ -51,7 +51,7 @@ namespace WebServer.Services
                     p.Email.Contains(searchQuery) ||
                     p.PhoneNumber.Contains(searchQuery) ||
                     p.Username.Contains(searchQuery) ||
-                    p.UUID.Equals(searchQuery)
+                    p.UUID.ToString().Contains(searchQuery)
                 );
             }
 
@@ -133,7 +133,7 @@ namespace WebServer.Services
                 p.MiddleName = entity.MiddleName;
                 p.LastName = entity.LastName;
                 p.Username = entity.Username;
-                if (p.Password != null && !p.Password.Equals(""))
+                if (entity.Password != null && !entity.Password.Equals(""))
                 {
                     p.Password = entity.Password;
                 }

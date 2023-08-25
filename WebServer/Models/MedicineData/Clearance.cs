@@ -5,13 +5,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace WebServer.Models.MedicineData
 {
     [Table("clearance")]
-    [PrimaryKey("MedicineId")]
+    [PrimaryKey("UUID")]
     public class Clearance
     {
-        [Column("medicine_id")]
+        [Column("uuid")]
         [Key]
         [Required]
-        public uint MedicineId { get; set; }
+        public Guid? UUID { get; set; }
 
         [Column("clearance_number")]
         [Required]

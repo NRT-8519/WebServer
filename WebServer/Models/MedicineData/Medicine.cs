@@ -1,16 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebServer.Models.MedicineData
 {
     [Table("medicine")]
+    [PrimaryKey("UUID")]
     public class Medicine
     {
-        [Column("id")]
-        [Key]
-        [Required]
-        public uint? Id { get; set; }
-
         [Column("uuid")]
         [Key]
         [Required]
@@ -54,7 +51,7 @@ namespace WebServer.Models.MedicineData
 
         [Column("company_id")]
         [Required]
-        public uint CompanyId { get; set; }
+        public uint? CompanyId { get; set; }
 
         [Required]
         [ForeignKey("CompanyId")]
@@ -62,13 +59,17 @@ namespace WebServer.Models.MedicineData
 
         [Column("issuer_id")]
         [Required]
-        public uint IssuerId { get; set; }
+        public uint? IssuerId { get; set; }
         [Required]
         [ForeignKey("IssuerId")]
         public Issuer Issuer { get; set; }
 
+        [Column("clearance_uuid")]
         [Required]
-        [ForeignKey("MedicineId")]
-        public List<Clearance> Clearances { get; set; } = new List<Clearance>();
+        public Guid? ClearanceUUID { get; set; }
+
+        [Required]
+        [ForeignKey("ClearanceUUID")]
+        public Clearance Clearance { get; set; }
     }
 }

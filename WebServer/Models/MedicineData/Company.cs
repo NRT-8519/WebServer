@@ -10,7 +10,6 @@ namespace WebServer.Models.MedicineData
     {
         [Column("id")]
         [Key]
-        [Required]
         public uint? Id { get; set; }
 
         [Column("uuid")]

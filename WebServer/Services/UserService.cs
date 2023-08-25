@@ -2,7 +2,6 @@
 using System;
 using System.Net;
 using WebServer.Features;
-using WebServer.Models.ClinicData.Entities;
 using WebServer.Models.DTOs;
 using WebServer.Models.UserData;
 using WebServer.Services.Contexts;
@@ -18,12 +17,51 @@ namespace WebServer.Services
             this.context = context;
         }
 
-        public async Task<IEnumerable<User>> FindAll()
+        public async Task<IEnumerable<UserDetailsDTO>> FindAll()
         {
-            return await context.Users.ToListAsync();
+            var result = await context.Users.ToListAsync();
+
+            List<UserDetailsDTO> DTOs = new();
+            foreach (var user in result)
+            {
+                DTOs.Add(new()
+                {
+                    UUID = user.UUID,
+                    FirstName = user.FirstName,
+                    MiddleName = user.MiddleName,
+                    LastName = user.LastName,
+                    Username = user.Username,
+                    Title = user.Title,
+                    DateOfBirth = user.DateOfBirth,
+                    Gender = user.Gender,
+                    SSN = user.SSN,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    PasswordExpiryDate = user.PasswordExpiryDate,
+                    IsDisabled = user.IsDisabled,
+                    IsExpired = user.IsExpired
+                });
+            }
+
+            return DTOs;
         }
 
-        public async Task<PaginatedList<User>> FindAllAdministratorsPaged(string sortOrder, string searchQuery, string currentFilter, int? pageNumber, int pageSize)
+        public async Task<int> FindAllAdministratorsCount()
+        {
+            return await context.Users.Where(u => u.Role.Equals("ADMINISTRATOR")).CountAsync();
+        }
+
+        public async Task<int> FindAllDoctorsCount()
+        {
+            return await context.Users.Where(u => u.Role.Equals("DOCTOR")).CountAsync();
+        }
+
+        public async Task<int> FindAllPatientsCount()
+        {
+            return await context.Users.Where(u => u.Role.Equals("PATIENT")).CountAsync();
+        }
+
+        public async Task<PaginatedResultDTO<UserDetailsDTO>> FindAllAdministratorsPaged(string sortOrder, string searchQuery, string currentFilter, int? pageNumber, int pageSize)
         {
             var administrators = from a in context.Users where a.Role.Equals("ADMINISTRATOR") select a;
             if (searchQuery != null)
@@ -49,7 +87,42 @@ namespace WebServer.Services
                 );
             }
 
-            return await PaginatedList<User>.CreateAsync(administrators.AsNoTracking(), pageNumber ?? 1, pageSize);
+            var result = await PaginatedList<User>.CreateAsync(administrators.AsNoTracking(), pageNumber ?? 1, pageSize);
+
+            PaginatedResultDTO<UserDetailsDTO> DTOs = new()
+            {
+                PageNumber = result.PageIndex,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages,
+                TotalItems = result.TotalItems,
+                HasNext = result.HasNextPage,
+                HasPrevious = result.HasPreviousPage
+            };
+
+            foreach (var user in result)
+            {
+                UserDetailsDTO u = new()
+                {
+                    UUID = user.UUID,
+                    FirstName = user.FirstName,
+                    MiddleName = user.MiddleName,
+                    LastName = user.LastName,
+                    Username = user.Username,
+                    Title = user.Title,
+                    DateOfBirth = user.DateOfBirth,
+                    Gender = user.Gender,
+                    SSN = user.SSN,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    PasswordExpiryDate = user.PasswordExpiryDate,
+                    IsDisabled = user.IsDisabled,
+                    IsExpired = user.IsExpired
+                };
+
+                DTOs.items.Add(u);
+            }
+
+            return DTOs;
         }
 
         public async Task<IEnumerable<User>> FindAllDisabled()
@@ -64,9 +137,31 @@ namespace WebServer.Services
         {
             return await context.Users.SingleOrDefaultAsync(x => x.Id == id);
         }
-        public async Task<User> FindByUUID(Guid UUID)
+        public async Task<User> FindEntityByUUID(Guid UUID)
         {
             return await context.Users.SingleOrDefaultAsync(x => x.UUID.Equals(UUID));
+        }
+        public async Task<UserDetailsDTO> FindByUUID(Guid UUID)
+        {
+            var result = await context.Users.SingleOrDefaultAsync(x => x.UUID.Equals(UUID));
+
+            return new()
+            {
+                UUID = result.UUID,
+                FirstName = result.FirstName,
+                MiddleName = result.MiddleName,
+                LastName = result.LastName,
+                Username = result.Username,
+                Title = result.Title,
+                DateOfBirth = result.DateOfBirth,
+                Gender = result.Gender,
+                SSN = result.SSN,
+                Email = result.Email,
+                PhoneNumber = result.PhoneNumber,
+                PasswordExpiryDate = result.PasswordExpiryDate,
+                IsDisabled = result.IsDisabled,
+                IsExpired = result.IsExpired
+            };
         }
         public async Task<User> FindAdministratorByUUID(Guid UUID)
         {
@@ -156,7 +251,7 @@ namespace WebServer.Services
         {
             try
             {
-                User a = await FindByUUID(entity.UUID);
+                User a = await FindEntityByUUID(entity.UUID);
                 a.UUID = entity.UUID;
                 a.FirstName = entity.FirstName;
                 a.MiddleName = entity.MiddleName;
@@ -219,7 +314,7 @@ namespace WebServer.Services
         {
             try
             {
-                User user = await FindByUUID(UUID);
+                User user = await FindEntityByUUID(UUID);
                 context.Users.Remove(user);
                 return await context.SaveChangesAsync();
             }

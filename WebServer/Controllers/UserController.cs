@@ -25,30 +25,10 @@ namespace WebServer.Controllers
         public override async Task<IActionResult> GetAll()
         {
             var result = await ((UserService)service).FindAll();
-            List<UserDetailsDTO> DTOs = new();
-            foreach (User user in result)
-            {
-                DTOs.Add(new() { 
-                    UUID = user.UUID, 
-                    Username = user.Username, 
-                    FirstName = user.FirstName, 
-                    MiddleName = user.MiddleName, 
-                    LastName = user.LastName, 
-                    Title = user.Title, 
-                    DateOfBirth = user.DateOfBirth, 
-                    SSN = user.SSN, 
-                    Gender = user.Gender, 
-                    Email = user.Email, 
-                    PhoneNumber = user.PhoneNumber,
-                    IsExpired = user.IsExpired, 
-                    IsDisabled = user.IsDisabled, 
-                    PasswordExpiryDate = user.PasswordExpiryDate
-                });
-            }
             if (result.Any()) 
             {
                 logger.LogInformation("Fetched all users.");
-                return Ok(DTOs);
+                return Ok(result);
             }
             else
             {
@@ -57,28 +37,36 @@ namespace WebServer.Controllers
             }
         }
 
+        [HttpGet("administrators/count")]
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> GetAllAdministratorsCount()
+        {
+             return Ok(await ((UserService)service).FindAllAdministratorsCount()); 
+        }
+
+        [HttpGet("doctors/count")]
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> GetAllDoctorsCount()
+        {
+            return Ok(await ((UserService)service).FindAllDoctorsCount());
+        }
+
+        [HttpGet("patients/count")]
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> GetAllPatientsCount()
+        {
+            return Ok(await ((UserService)service).FindAllPatientsCount());
+        }
+
         [HttpGet("all/basic")]
         [Authorize(Roles = "ADMINISTRATOR")]
         public async Task<IActionResult> GetAllPaged(string sortOrder, string searchQuery, string currentFilter, int? pageNumber, int pageSize)
         {
             var result = await ((UserService)service).FindAllAdministratorsPaged(sortOrder, searchQuery, currentFilter, pageNumber, pageSize);
-            PaginatedResultDTO<UserBasicDTO> DTOs = new();
-            foreach (User user in result)
-            {
-                DTOs.items.Add(new()
-                {
-                    UUID = user.UUID,
-                    Username = user.Username,
-                    FirstName = user.FirstName,
-                    MiddleName = user.MiddleName,
-                    LastName = user.LastName,
-                    Email = user.Email
-                });
-            }
-            if (result.Any())
+            if (result.items.Any())
             {
                 logger.LogInformation("Fetched all users.");
-                return Ok(DTOs);
+                return Ok(result);
             }
             else
             {

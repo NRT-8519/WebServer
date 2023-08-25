@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebServer.Models.DTOs;
 using WebServer.Models.MedicineData;
 using WebServer.Services;
 
@@ -8,19 +9,44 @@ namespace WebServer.Controllers
     [Authorize]
     [ApiController]
     [Route("api/company")]
-    public class CompanyController : Controller<Company, Company, Company>
+    public class CompanyController : Controller<Company, CompanyDTO, CompanyDTO>
     {
 
-        public CompanyController(ILogger<CompanyController> logger, IDbService<Company, Company, Company> service) : base(logger, service)
+        public CompanyController(ILogger<CompanyController> logger, IDbService<Company, CompanyDTO, CompanyDTO> service) : base(logger, service)
         {
         }
 
-        [HttpGet("all")]
+        [HttpGet("all/all")]
         public override async Task<IActionResult> GetAll()
         {
             var result = await service.FindAll();
 
             return result.Any() ? Ok(result) : NoContent();
+        }
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllPaged(string sortOrder, string searchQuery, string currentFilter, int? pageNumber, int pageSize)
+        {
+            var result = await ((CompanyService)service).FindAllPaged(sortOrder, searchQuery, currentFilter, pageNumber, pageSize);
+
+            if (result.items.Any())
+            {
+                logger.LogInformation("Fetched all companies information (Paged).");
+                return Ok(result);
+            }
+            else
+            {
+                logger.LogInformation("Companies database empty.");
+                return NoContent();
+            }
+        }
+
+        [HttpGet("count")]
+        public async Task<IActionResult> GetCount()
+        {
+            var result = await ((CompanyService)service).Count();
+
+            return Ok(result);
         }
 
         [HttpGet("{id:int}")]
@@ -41,7 +67,7 @@ namespace WebServer.Controllers
         }
 
         [HttpPost("add")]
-        public override async Task<IActionResult> Add([FromBody] Company company)
+        public override async Task<IActionResult> Add([FromBody] CompanyDTO company)
         {
             var result = await service.Insert(company);
 
@@ -49,7 +75,7 @@ namespace WebServer.Controllers
         }
 
         [HttpPut("edit")]
-        public override async Task<IActionResult> Edit([FromBody] Company company)
+        public override async Task<IActionResult> Edit([FromBody] CompanyDTO company)
         {
             var result = await service.Update(company);
 
@@ -57,7 +83,7 @@ namespace WebServer.Controllers
         }
 
         [HttpDelete("remove")]
-        public override async Task<IActionResult> Remove(Company company)
+        public override async Task<IActionResult> Remove(CompanyDTO company)
         {
             var result = await service.Delete(company);
 

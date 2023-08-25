@@ -15,7 +15,7 @@ namespace WebServer.Services
             this.context = context;
         }
 
-        public async Task<PaginatedList<Doctor>> FindAllPaged(string sortOrder, string searchQuery, string currentFilter, int? pageNumber, int pageSize)
+        public async Task<PaginatedResultDTO<DoctorDetailsDTO>> FindAllPaged(string sortOrder, string searchQuery, string currentFilter, int? pageNumber, int pageSize)
         {
             var doctors = from d in context.Doctors where d.UUID != Guid.Empty select d;
             if (true)
@@ -46,30 +46,84 @@ namespace WebServer.Services
                 }
             }
 
-            return await PaginatedList<Doctor>.CreateAsync(doctors
+            var result = await PaginatedList<Doctor>.CreateAsync(doctors
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
                 .Include(d => d.Schedules)
                 .Include(d => d.TimeOffs)
                 .Include(d => d.WorkShifts), pageNumber ?? 1, pageSize);
-            //return await context.Doctors
-            //    .Include(d => d.Notes)
-            //    .Include(d => d.Prescriptions)
-            //    .Include(d => d.Schedules)
-            //    .Include(d => d.TimeOffs)
-            //    .Include(d => d.WorkShifts)
-            //    .Where(x => x.Role.Equals("DOCTOR")).ToListAsync();
+
+            PaginatedResultDTO<DoctorDetailsDTO> DTOs = new();
+            DTOs.PageNumber = result.PageIndex;
+            DTOs.PageSize = result.PageSize;
+            DTOs.TotalPages = result.TotalPages;
+            DTOs.TotalItems = result.TotalItems;
+            DTOs.HasNext = result.HasNextPage;
+            DTOs.HasPrevious = result.HasPreviousPage;
+
+            foreach (var doctor in result)
+            {
+                DoctorDetailsDTO d = new()
+                {
+                    UUID = doctor.UUID,
+                    FirstName = doctor.FirstName,
+                    MiddleName = doctor.MiddleName,
+                    LastName = doctor.LastName,
+                    Username = doctor.Username,
+                    Title = doctor.Title,
+                    DateOfBirth = doctor.DateOfBirth,
+                    Gender = doctor.Gender,
+                    SSN = doctor.SSN,
+                    Email = doctor.Email,
+                    PhoneNumber = doctor.PhoneNumber,
+                    PasswordExpiryDate = doctor.PasswordExpiryDate,
+                    IsDisabled = doctor.IsDisabled,
+                    IsExpired = doctor.IsExpired,
+                    AreaOfExpertise = doctor.AreaOfExpertise,
+                    RoomNumber = doctor.RoomNumber
+                };
+
+                DTOs.items.Add(d);
+            }
+
+            return DTOs;
         }
 
-        public async Task<IEnumerable<Doctor>> FindAll()
+        public async Task<IEnumerable<DoctorDetailsDTO>> FindAll()
         {
-            return await context.Doctors
+            var result = await context.Doctors
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
                 .Include(d => d.Schedules)
                 .Include(d => d.TimeOffs)
                 .Include(d => d.WorkShifts)
                 .Where(x => x.Role.Equals("DOCTOR")).ToListAsync();
+
+            List<DoctorDetailsDTO> DTOs = new();
+            foreach (var doctor in result)
+            {
+                DTOs.Add(new()
+                {
+                    UUID = doctor.UUID,
+                    FirstName = doctor.FirstName,
+                    MiddleName = doctor.MiddleName,
+                    LastName = doctor.LastName,
+                    Username = doctor.Username,
+                    Title = doctor.Title,
+                    DateOfBirth = doctor.DateOfBirth,
+                    Gender = doctor.Gender,
+                    SSN = doctor.SSN,
+                    Email = doctor.Email,
+                    PhoneNumber = doctor.PhoneNumber,
+                    PasswordExpiryDate = doctor.PasswordExpiryDate,
+                    IsDisabled = doctor.IsDisabled,
+                    IsExpired = doctor.IsExpired,
+                    AreaOfExpertise = doctor.AreaOfExpertise,
+                    RoomNumber = doctor.RoomNumber
+                });
+            }
+
+            return DTOs;
         }
         public async Task<Doctor> FindById(int id)
         {
@@ -81,7 +135,7 @@ namespace WebServer.Services
                 .Include(d => d.WorkShifts)
                 .Where(x => x.Id == id && x.Role.Equals("DOCTOR")).SingleOrDefaultAsync();
         }
-        public async Task<Doctor> FindByUUID(Guid UUID)
+        public async Task<Doctor> FindEntityByUUID(Guid UUID)
         {
             return await context.Doctors
                 .Include(d => d.Notes)
@@ -90,6 +144,39 @@ namespace WebServer.Services
                 .Include(d => d.TimeOffs)
                 .Include(d => d.WorkShifts)
                 .Where(x => x.UUID.Equals(UUID) && x.Role.Equals("DOCTOR")).SingleOrDefaultAsync();
+        }
+
+        public async Task<DoctorDetailsDTO> FindByUUID(Guid UUID)
+        {
+            var result = await context.Doctors
+                .Include(d => d.Notes)
+                .Include(d => d.Prescriptions)
+                .Include(d => d.Schedules)
+                .Include(d => d.TimeOffs)
+                .Include(d => d.WorkShifts)
+                .Where(x => x.UUID.Equals(UUID) && x.Role.Equals("DOCTOR")).SingleOrDefaultAsync();
+
+            DoctorDetailsDTO doctor = new()
+            {
+                UUID = result.UUID,
+                FirstName = result.FirstName,
+                MiddleName = result.MiddleName,
+                LastName = result.LastName,
+                Username = result.Username,
+                Title = result.Title,
+                DateOfBirth = result.DateOfBirth,
+                Gender = result.Gender,
+                SSN = result.SSN,
+                Email = result.Email,
+                PhoneNumber = result.PhoneNumber,
+                PasswordExpiryDate = result.PasswordExpiryDate,
+                IsDisabled = result.IsDisabled,
+                IsExpired = result.IsExpired,
+                AreaOfExpertise = result.AreaOfExpertise,
+                RoomNumber = result.RoomNumber
+            };
+
+            return doctor;
         }
 
         public async Task<int> Insert(DoctorDetailsDTO entity)
@@ -133,7 +220,7 @@ namespace WebServer.Services
         {
             try
             {
-                Doctor d = await FindByUUID(entity.UUID);
+                Doctor d = await FindEntityByUUID(entity.UUID);
                 d.UUID = entity.UUID;
                 d.FirstName = entity.FirstName;
                 d.MiddleName = entity.MiddleName;

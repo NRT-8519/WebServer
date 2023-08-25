@@ -23,29 +23,10 @@ namespace WebServer.Controllers
         public async Task<IActionResult> GetAllBasic(string sortOrder, string searchString, string currentFilter, int? pageNumber, int pageSize)
         {
             var result = await ((DoctorService)service).FindAllPaged(sortOrder, searchString, currentFilter, pageNumber, pageSize);
-            if (result.Any())
+            if (result.items.Any())
             {
-                PaginatedResultDTO<UserBasicDTO> DTOs = new();
-                DTOs.PageNumber = result.PageIndex;
-                DTOs.PageSize = result.PageSize;
-                DTOs.TotalPages = result.TotalPages;
-                DTOs.TotalItems = result.TotalItems;
-                DTOs.HasNext = result.HasNextPage;
-                DTOs.HasPrevious = result.HasPreviousPage;
-                foreach (var doctor in result)
-                {
-                    DTOs.items.Add(new UserBasicDTO
-                    {
-                        FirstName = doctor.FirstName,
-                        MiddleName = doctor.MiddleName,
-                        LastName = doctor.LastName,
-                        Username = doctor.Username,
-                        Email = doctor.Email,
-                        UUID = doctor.UUID
-                    });
-                }
                 logger.LogInformation("Fetched all doctors basic information (Paged).");
-                return Ok(DTOs);
+                return Ok(result);
             }
             else
             {
@@ -62,21 +43,8 @@ namespace WebServer.Controllers
 
             if (result.Any())
             {
-                List<UserBasicDTO> DTOs = new();
-                foreach (var doctor in result)
-                {
-                    DTOs.Add(new UserBasicDTO
-                    {
-                        FirstName = doctor.FirstName,
-                        MiddleName = doctor.MiddleName,
-                        LastName = doctor.LastName,
-                        Username = doctor.Username,
-                        Email = doctor.Email,
-                        UUID = doctor.UUID
-                    });
-                }
                 logger.LogInformation("Fetched all doctors.");
-                return Ok(DTOs);
+                return Ok(result);
             }
             else
             {
@@ -107,27 +75,7 @@ namespace WebServer.Controllers
             var result = await ((DoctorService)service).FindByUUID(UUID);
             if (result != default)
             {
-                DoctorDetailsDTO doctor = new()
-                {
-                    UUID = result.UUID,
-                    FirstName = result.FirstName,
-                    MiddleName = result.MiddleName,
-                    LastName = result.LastName,
-                    Username = result.Username,
-                    Title = result.Title,
-                    DateOfBirth = result.DateOfBirth,
-                    Gender = result.Gender,
-                    SSN = result.SSN,
-                    Email = result.Email,
-                    PhoneNumber = result.PhoneNumber,
-                    PasswordExpiryDate = result.PasswordExpiryDate,
-                    IsDisabled = result.IsDisabled,
-                    IsExpired = result.IsExpired,
-                    AreaOfExpertise = result.AreaOfExpertise,
-                    RoomNumber = result.RoomNumber
-                };
-
-                return Ok(doctor);
+                return Ok(result);
             }
             else
             {

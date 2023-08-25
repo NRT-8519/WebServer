@@ -22,21 +22,8 @@ namespace WebServer.Controllers
             var result = await ((PatientService)service).FindAll();
             if (result.Any())
             {
-                List<UserBasicDTO> DTOs = new();
-                foreach (var patient in result)
-                {
-                    DTOs.Add(new UserBasicDTO
-                    {
-                        UUID = patient.UUID,
-                        FirstName = patient.FirstName,
-                        MiddleName = patient.MiddleName,
-                        LastName = patient.LastName,
-                        Username = patient.Username,
-                        Email = patient.Email
-                    });
-                }
                 logger.LogInformation("Fetched all patients basic information.");
-                return Ok(DTOs);
+                return Ok(result);
             }
             else
             {
@@ -50,29 +37,10 @@ namespace WebServer.Controllers
         public async Task<IActionResult> GetAllBasic(string sortOrder, string searchString, string currentFilter, int? pageNumber, int pageSize)
         {
             var result = await ((PatientService)service).FindAllPaged(sortOrder, searchString, currentFilter, pageNumber, pageSize);
-            if (result.Any())
+            if (result.items.Any())
             {
-                PaginatedResultDTO<UserBasicDTO> DTOs = new();
-                DTOs.PageNumber = result.PageIndex;
-                DTOs.PageSize = result.PageSize;
-                DTOs.TotalPages = result.TotalPages;
-                DTOs.TotalItems = result.TotalItems;
-                DTOs.HasNext = result.HasNextPage;
-                DTOs.HasPrevious = result.HasPreviousPage;
-                foreach (var patient in result)
-                {
-                    DTOs.items.Add(new UserBasicDTO
-                    {
-                        FirstName = patient.FirstName,
-                        MiddleName = patient.MiddleName,
-                        LastName = patient.LastName,
-                        Username = patient.Username,
-                        Email = patient.Email,
-                        UUID = patient.UUID
-                    });
-                }
                 logger.LogInformation("Fetched all patients basic information (Paged).");
-                return Ok(DTOs);
+                return Ok(result);
             }
             else
             {
@@ -104,33 +72,7 @@ namespace WebServer.Controllers
             
             if (result != default)
             {
-                PatientDetailsDTO patient = new()
-                {
-                    UUID = result.UUID,
-                    FirstName = result.FirstName,
-                    MiddleName = result.MiddleName,
-                    LastName = result.LastName,
-                    Username = result.Username,
-                    Title = result.Title,
-                    DateOfBirth = result.DateOfBirth,
-                    Gender = result.Gender,
-                    SSN = result.SSN,
-                    Email = result.Email,
-                    PhoneNumber = result.PhoneNumber,
-                    PasswordExpiryDate = result.PasswordExpiryDate,
-                    IsDisabled = result.IsDisabled,
-                    IsExpired = result.IsExpired,
-                    AssignedDoctor = new UserBasicDTO
-                    {
-                        FirstName = result.AssignedDoctor.FirstName,
-                        MiddleName = result.AssignedDoctor.MiddleName,
-                        LastName = result.AssignedDoctor.LastName,
-                        Username = result.AssignedDoctor.Username,
-                        Email = result.AssignedDoctor.Email,
-                        UUID = result.AssignedDoctor.UUID
-                    }
-                };
-                return Ok(patient);
+                return Ok(result);
             }
             else
             {

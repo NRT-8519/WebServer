@@ -42,9 +42,9 @@ builder.Services.AddDbContextPool<MedicineContext>(options =>
 builder.Services.AddScoped<IDbService<User, UserBasicDTO, UserDetailsDTO>, UserService>();
 builder.Services.AddScoped<IDbService<Doctor, UserBasicDTO, DoctorDetailsDTO>, DoctorService>();
 builder.Services.AddScoped<IDbService<Patient, UserBasicDTO, PatientDetailsDTO>, PatientService>();
-builder.Services.AddScoped<IDbService<Company, Company, Company>, CompanyService>();
-builder.Services.AddScoped<IDbService<Issuer, Issuer, Issuer>, IssuerService>();
-builder.Services.AddScoped<IDbService<Medicine, Medicine, Medicine>, MedicineService>();
+builder.Services.AddScoped<IDbService<Company, CompanyDTO, CompanyDTO>, CompanyService>();
+builder.Services.AddScoped<IDbService<Issuer, IssuerDTO, IssuerDTO>, IssuerService>();
+builder.Services.AddScoped<IDbService<Medicine, MedicineDTO, MedicineDTO>, MedicineService>();
 
 builder.Services.AddScoped<ITokenService<JWTToken>, JWTManager>();
 builder.Services.AddControllers();

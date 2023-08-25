@@ -2,9 +2,9 @@
 {
     public interface IDbService<T, B, D>
     {
-        Task<IEnumerable<T>> FindAll();
+        Task<IEnumerable<D>> FindAll();
         Task<T> FindById(int id);
-        Task<T> FindByUUID(Guid UUID);
+        Task<D> FindByUUID(Guid UUID);
         Task<int> Insert(D entity);
         Task<int> Update(D entity);
         Task<int> Delete(B entity);

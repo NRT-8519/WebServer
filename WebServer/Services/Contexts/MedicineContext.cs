@@ -15,8 +15,7 @@ namespace WebServer.Services.Contexts
 
             modelBuilder.Entity<Medicine>(entity =>
             {
-                entity.HasKey(m => m.Id);
-                entity.Property(m => m.UUID).IsRequired();
+                entity.HasKey(m => m.UUID);
                 entity.Property(m => m.Name).IsRequired();
                 entity.Property(m => m.Type).IsRequired();
                 entity.Property(m => m.Dosage).IsRequired();
@@ -26,9 +25,9 @@ namespace WebServer.Services.Contexts
                 entity.Property(m => m.UniqueClassification);
                 entity.Property(m => m.INN).IsRequired();
                 entity.Property(m => m.PrescriptionType).IsRequired();
-                entity.HasOne(m => m.Company).WithOne().HasForeignKey<Company>(c => c.Id).IsRequired();
-                entity.HasOne(m => m.Issuer).WithOne().HasForeignKey<Issuer>(i => i.Id).IsRequired();
-                entity.HasMany(m => m.Clearances).WithOne().HasForeignKey(c => c.MedicineId).IsRequired();
+                entity.HasOne(m => m.Company).WithOne().HasForeignKey<Medicine>(c => c.CompanyId).IsRequired();
+                entity.HasOne(m => m.Issuer).WithOne().HasForeignKey<Medicine>(i => i.IssuerId).IsRequired();
+                entity.HasOne(m => m.Clearance).WithOne().HasForeignKey<Medicine>(c => c.ClearanceUUID).IsRequired();
             });
         }
     }

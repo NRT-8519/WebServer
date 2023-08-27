@@ -254,9 +254,6 @@ namespace WebServer.Services
         {
             try
             {
-                var company = await companyContext.Companies.SingleOrDefaultAsync(x => x.UUID.Equals(entity.Company.UUID));
-                var issuer = await issuerContext.Issuers.SingleOrDefaultAsync(x => x.UUID.Equals(entity.Issuer.UUID));
-
                 Medicine m = new()
                 {
                     UUID = Guid.NewGuid(),
@@ -269,8 +266,8 @@ namespace WebServer.Services
                     UniqueClassification = entity.UniqueClassification,
                     INN = entity.INN,
                     PrescriptionType = entity.PrescriptionType,
-                    CompanyUUID = company.UUID,
-                    IssuerUUID = issuer.UUID,
+                    CompanyUUID = entity.Company.UUID,
+                    IssuerUUID = entity.Issuer.UUID,
                     Clearance = new()
                     {
                         UUID = Guid.NewGuid(),

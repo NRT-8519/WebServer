@@ -14,9 +14,11 @@ namespace WebServer.Services
         private readonly CompanyContext companyContext;
         private readonly IssuerContext issuerContext;
 
-        public MedicineService(MedicineContext context)
+        public MedicineService(MedicineContext context, CompanyContext companyContext, IssuerContext issuerContext)
         {
             this.context = context;
+            this.companyContext = companyContext;
+            this.issuerContext = issuerContext;
         }
 
         public async Task<int> Delete(MedicineDTO entity)
@@ -97,9 +99,26 @@ namespace WebServer.Services
             return DTOs;
         }
 
-        public async Task<PaginatedResultDTO<MedicineDTO>> FindAllPaged(string sortOrder, string searchQuery, string currentFilter, int? pageNumber, int pageSize)
+        public async Task<PaginatedResultDTO<MedicineDTO>> FindAllPaged(string sortOrder, string searchQuery, string currentFilter, int? pageNumber, int pageSize, Guid? company, Guid? issuer)
         {
-            var medicines = context.Medicines.Include(m => m.Clearance).Include(m => m.Company).Include(m => m.Issuer).AsQueryable();
+            IQueryable<Medicine> medicines;
+
+            if ((company == null || company.Equals(Guid.Empty)) && (issuer == null || issuer.Equals(Guid.Empty)))
+            {
+                medicines = context.Medicines.Include(m => m.Clearance).Include(m => m.Company).Include(m => m.Issuer).AsQueryable();
+            }
+            else if (company != null && !company.Equals(Guid.Empty))
+            {
+                medicines = context.Medicines.Include(m => m.Clearance).Include(m => m.Company).Include(m => m.Issuer).Where(m => m.Company.UUID.Equals(company)).AsQueryable();
+            }
+            else if (issuer != null && !issuer.Equals(Guid.Empty))
+            {
+                medicines = context.Medicines.Include(m => m.Clearance).Include(m => m.Company).Include(m => m.Issuer).Where(m => m.Issuer.UUID.Equals(issuer)).AsQueryable();
+            }
+            else
+            {
+                medicines = context.Medicines.Include(m => m.Clearance).Include(m => m.Company).Include(m => m.Issuer).Where(m => (m.Issuer.UUID.Equals(issuer) && m.Company.UUID.Equals(company))).AsQueryable();
+            }
 
             if (searchQuery != null)
             {
@@ -185,7 +204,7 @@ namespace WebServer.Services
             return await context.Medicines.CountAsync();
         }
 
-        public async Task<Medicine> FindEntityByUUID(Guid UUID)
+        public async Task<Medicine> FindEntityByUUID(Guid? UUID)
         {
             return await context.Medicines.Include(m => m.Clearance).Include(m => m.Company).Include(m => m.Issuer).SingleOrDefaultAsync(m => m.UUID.Equals(UUID));
         }
@@ -250,8 +269,8 @@ namespace WebServer.Services
                     UniqueClassification = entity.UniqueClassification,
                     INN = entity.INN,
                     PrescriptionType = entity.PrescriptionType,
-                    CompanyId = company.Id,
-                    IssuerId = issuer.Id,
+                    CompanyUUID = company.UUID,
+                    IssuerUUID = issuer.UUID,
                     Clearance = new()
                     {
                         UUID = Guid.NewGuid(),
@@ -260,7 +279,7 @@ namespace WebServer.Services
                         ExpiryDate = entity.Clearance.ExpiryDate,
                     },
                 };
-                context.Add(entity);
+                context.Add(m);
                 return await context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException exception)
@@ -274,7 +293,30 @@ namespace WebServer.Services
         {
             try
             {
-                context.Update(entity);
+                Medicine m = await FindEntityByUUID(entity.UUID);
+
+                m.Name = entity.Name;
+                m.Type = entity.Type;
+                m.Dosage = entity.Dosage;
+                m.DosageType = entity.DosageType;
+                m.EAN = entity.EAN;
+                m.ATC = entity.ATC;
+                m.UniqueClassification = entity.UniqueClassification;
+                m.INN = entity.INN;
+                m.PrescriptionType = entity.PrescriptionType;
+
+                //Company c = await companyContext.FindAsync<Company>(entity.Company.UUID);
+                //Issuer i = await issuerContext.FindAsync<Issuer>(entity.Issuer.UUID);
+                m.CompanyUUID = entity.Company.UUID;
+                //m.Company = c;
+
+                m.IssuerUUID = entity.Issuer.UUID;
+                //m.Issuer = i;
+
+                m.Clearance.BeginDate = entity.Clearance.BeginDate;
+                m.Clearance.ExpiryDate = entity.Clearance.ExpiryDate;
+
+                context.Update(m);
                 return await context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException exception)

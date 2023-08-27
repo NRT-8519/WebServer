@@ -25,8 +25,8 @@ namespace WebServer.Services.Contexts
                 entity.Property(m => m.UniqueClassification);
                 entity.Property(m => m.INN).IsRequired();
                 entity.Property(m => m.PrescriptionType).IsRequired();
-                entity.HasOne(m => m.Company).WithOne().HasForeignKey<Medicine>(c => c.CompanyId).IsRequired();
-                entity.HasOne(m => m.Issuer).WithOne().HasForeignKey<Medicine>(i => i.IssuerId).IsRequired();
+                entity.HasOne(m => m.Company).WithOne().HasForeignKey<Medicine>(c => c.CompanyUUID).IsRequired();
+                entity.HasOne(m => m.Issuer).WithOne().HasForeignKey<Medicine>(i => i.IssuerUUID).IsRequired();
                 entity.HasOne(m => m.Clearance).WithOne().HasForeignKey<Medicine>(c => c.ClearanceUUID).IsRequired();
             });
         }

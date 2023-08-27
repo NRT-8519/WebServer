@@ -15,8 +15,7 @@ namespace WebServer.Services.Contexts
 
             modelBuilder.Entity<Company>(entity =>
             {
-                entity.HasKey(c => c.Id);
-                entity.Property(c => c.UUID).IsRequired();
+                entity.HasKey(c => c.UUID);
                 entity.Property(c => c.Name).IsRequired();
                 entity.Property(c => c.Country).IsRequired();
                 entity.Property(c => c.City).IsRequired();

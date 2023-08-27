@@ -49,19 +49,19 @@ namespace WebServer.Models.MedicineData
         [Required]
         public string PrescriptionType { get; set; }
 
-        [Column("company_id")]
+        [Column("company_uuid")]
         [Required]
-        public uint? CompanyId { get; set; }
+        public Guid? CompanyUUID { get; set; }
 
         [Required]
-        [ForeignKey("CompanyId")]
+        [ForeignKey("CompanyUUID")]
         public Company Company { get; set; }
 
-        [Column("issuer_id")]
+        [Column("issuer_uuid")]
         [Required]
-        public uint? IssuerId { get; set; }
+        public Guid? IssuerUUID { get; set; }
         [Required]
-        [ForeignKey("IssuerId")]
+        [ForeignKey("IssuerUUID")]
         public Issuer Issuer { get; set; }
 
         [Column("clearance_uuid")]

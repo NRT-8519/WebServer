@@ -5,11 +5,10 @@ using Microsoft.EntityFrameworkCore;
 namespace WebServer.Models.MedicineData
 {
     [Table("company")]
-    [PrimaryKey("Id")]
+    [PrimaryKey("UUID")]
     public class Company
     {
         [Column("id")]
-        [Key]
         public uint? Id { get; set; }
 
         [Column("uuid")]

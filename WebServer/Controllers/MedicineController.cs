@@ -32,9 +32,9 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllPaged(string sortOrder, string searchQuery, string currentFilter, int? pageNumber, int pageSize)
+        public async Task<IActionResult> GetAllPaged(string sortOrder, string searchQuery, string currentFilter, int? pageNumber, int pageSize, Guid? company, Guid? issuer)
         {
-            var result = await ((MedicineService) service).FindAllPaged(sortOrder, searchQuery, currentFilter, pageNumber, pageSize);
+            var result = await ((MedicineService) service).FindAllPaged(sortOrder, searchQuery, currentFilter, pageNumber, pageSize, company, issuer);
 
             if (result.items.Any())
             {

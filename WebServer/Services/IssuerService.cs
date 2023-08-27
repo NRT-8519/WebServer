@@ -170,7 +170,7 @@ namespace WebServer.Services
             {
                 Issuer i = new()
                 {
-                    UUID = entity.UUID,
+                    UUID = Guid.NewGuid(),
                     Name = entity.Name,
                     City = entity.City,
                     Area = entity.Area,

@@ -108,10 +108,10 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("{UUID}")]
-        [Authorize(Roles = "ADMINISTRATOR")]
+        [Authorize(Roles = "ADMINISTRATOR,DOCTOR,PATIENT")]
         public override async Task<IActionResult> GetByUUID(Guid UUID)
         {
-            var user = await ((UserService)service).FindAdministratorByUUID(UUID);
+            var user = await ((UserService)service).FindByUUID(UUID);
             if (user != default)
             {
                 return Ok(new UserDetailsDTO

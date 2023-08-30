@@ -7,6 +7,8 @@ using Microsoft.OpenApi.Models;
 using System.Security.Cryptography.Xml;
 using System.Text;
 using WebServer.Authentication;
+using WebServer.Models;
+using WebServer.Models.ClinicData;
 using WebServer.Models.ClinicData.Entities;
 using WebServer.Models.DTOs;
 using WebServer.Models.MedicineData;
@@ -20,7 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContextPool<UserContext>(options =>
 {
-    string ConnectionString = builder.Configuration["ConnectionStrings:UserDataConnectionString"];
+    string ConnectionString = builder.Configuration["ConnectionStrings:MedicineDbConnectionString"];
     options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
 });
 builder.Services.AddDbContextPool<CompanyContext>(options =>
@@ -38,6 +40,16 @@ builder.Services.AddDbContextPool<MedicineContext>(options =>
     string ConnectionString = builder.Configuration["ConnectionStrings:MedicineDbConnectionString"];
     options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
 });
+builder.Services.AddDbContextPool<RequestContext>(options =>
+{
+    string ConnectionString = builder.Configuration["ConnectionStrings:MedicineDbConnectionString"];
+    options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
+});
+builder.Services.AddDbContextPool<PrescriptionContext>(options =>
+{
+    string ConnectionString = builder.Configuration["ConnectionStrings:MedicineDbConnectionString"];
+    options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
+});
 
 builder.Services.AddScoped<IDbService<User, UserBasicDTO, UserDetailsDTO>, UserService>();
 builder.Services.AddScoped<IDbService<Doctor, UserBasicDTO, DoctorDetailsDTO>, DoctorService>();
@@ -45,6 +57,8 @@ builder.Services.AddScoped<IDbService<Patient, UserBasicDTO, PatientDetailsDTO>,
 builder.Services.AddScoped<IDbService<Company, CompanyDTO, CompanyDTO>, CompanyService>();
 builder.Services.AddScoped<IDbService<Issuer, IssuerDTO, IssuerDTO>, IssuerService>();
 builder.Services.AddScoped<IDbService<Medicine, MedicineDTO, MedicineDTO>, MedicineService>();
+builder.Services.AddScoped<IDbService<Request, RequestDTO, RequestDTO>, RequestService>();
+builder.Services.AddScoped<IDbService<Prescription, PrescriptionDTO, PrescriptionDTO>, PrescriptionService>();
 
 builder.Services.AddScoped<ITokenService<JWTToken>, JWTManager>();
 builder.Services.AddControllers();

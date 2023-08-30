@@ -52,7 +52,7 @@ namespace WebServer.Services
 
         public async Task<IEnumerable<MedicineDTO>> FindAll()
         {
-            var result = await context.Medicines.Include(m => m.Clearance).Include(m => m.Company).Include(m => m.Issuer).ToListAsync();
+            var result = await context.Medicines.Include(m => m.Clearance).Include(m => m.Company).Include(m => m.Issuer).AsNoTracking().ToListAsync();
 
             List<MedicineDTO> DTOs = new();
 

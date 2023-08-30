@@ -31,32 +31,56 @@ namespace WebServer.Services
             List<PatientDetailsDTO> DTOs = new();
             foreach (var patient in result)
             {
-                DTOs.Add(new PatientDetailsDTO
+                if (patient.AssignedDoctor == null)
                 {
-                    UUID = patient.UUID,
-                    FirstName = patient.FirstName,
-                    MiddleName = patient.MiddleName,
-                    LastName = patient.LastName,
-                    Username = patient.Username,
-                    Title = patient.Title,
-                    DateOfBirth = patient.DateOfBirth,
-                    Gender = patient.Gender,
-                    SSN = patient.SSN,
-                    Email = patient.Email,
-                    PhoneNumber = patient.PhoneNumber,
-                    PasswordExpiryDate = patient.PasswordExpiryDate,
-                    IsDisabled = patient.IsDisabled,
-                    IsExpired = patient.IsExpired,
-                    AssignedDoctor = new UserBasicDTO
+                    DTOs.Add(new PatientDetailsDTO
                     {
-                        FirstName = patient.AssignedDoctor.FirstName,
-                        MiddleName = patient.AssignedDoctor.MiddleName,
-                        LastName = patient.AssignedDoctor.LastName,
-                        Username = patient.AssignedDoctor.Username,
-                        Email = patient.AssignedDoctor.Email,
-                        UUID = patient.AssignedDoctor.UUID
-                    }
-                });
+                        UUID = patient.UUID,
+                        FirstName = patient.FirstName,
+                        MiddleName = patient.MiddleName,
+                        LastName = patient.LastName,
+                        Username = patient.Username,
+                        Title = patient.Title,
+                        DateOfBirth = patient.DateOfBirth,
+                        Gender = patient.Gender,
+                        SSN = patient.SSN,
+                        Email = patient.Email,
+                        PhoneNumber = patient.PhoneNumber,
+                        PasswordExpiryDate = patient.PasswordExpiryDate,
+                        IsDisabled = patient.IsDisabled,
+                        IsExpired = patient.IsExpired
+                    });
+                }
+                else
+                {
+                    DTOs.Add(new PatientDetailsDTO
+                    {
+                        UUID = patient.UUID,
+                        FirstName = patient.FirstName,
+                        MiddleName = patient.MiddleName,
+                        LastName = patient.LastName,
+                        Username = patient.Username,
+                        Title = patient.Title,
+                        DateOfBirth = patient.DateOfBirth,
+                        Gender = patient.Gender,
+                        SSN = patient.SSN,
+                        Email = patient.Email,
+                        PhoneNumber = patient.PhoneNumber,
+                        PasswordExpiryDate = patient.PasswordExpiryDate,
+                        IsDisabled = patient.IsDisabled,
+                        IsExpired = patient.IsExpired,
+                        AssignedDoctor = new UserBasicDTO
+                        {
+                            FirstName = patient.AssignedDoctor.FirstName,
+                            MiddleName = patient.AssignedDoctor.MiddleName,
+                            LastName = patient.AssignedDoctor.LastName,
+                            Username = patient.AssignedDoctor.Username,
+                            Email = patient.AssignedDoctor.Email,
+                            UUID = patient.AssignedDoctor.UUID
+                        }
+                    });
+                }
+                
             }
 
             return DTOs;

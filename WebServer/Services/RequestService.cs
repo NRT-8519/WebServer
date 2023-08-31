@@ -51,6 +51,13 @@ namespace WebServer.Services
             return result;
         }
 
+        public async Task<int> Count(Guid UUID, string status)
+        {
+            var result = await context.Requests.Where(r => (r.DoctorUUID.Equals(UUID) || r.PatientUUID.Equals(UUID)) && r.Status.Equals(status)).CountAsync();
+
+            return result;
+        }
+
         public async Task<PaginatedResultDTO<RequestDTO>> FindAllPaged(string sortOrder, int? pageNumber, int pageSize, Guid? patient, Guid? doctor)
         {
             IQueryable<Request> requests;

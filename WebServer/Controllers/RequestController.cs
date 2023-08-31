@@ -52,6 +52,15 @@ namespace WebServer.Controllers
             return Ok(result);
         }
 
+        [HttpGet("count/{UUID}/{status}")]
+        [Authorize(Roles = "PATIENT,DOCTOR")]
+        public async Task<IActionResult> GetCount(Guid UUID, string status)
+        {
+            var result = await ((RequestService)service).Count(UUID, status);
+
+            return Ok(result);
+        }
+
         [HttpGet("{id:int}")]
         public override async Task<IActionResult> GetById(int id)
         {

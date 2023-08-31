@@ -41,8 +41,6 @@ namespace WebServer.Services.Contexts
                 entity.HasMany(d => d.Notes).WithOne().HasForeignKey(n => n.DoctorUUID);
                 entity.HasMany(d => d.Prescriptions).WithOne().HasForeignKey(p => p.DoctorUUID);
                 entity.HasMany(d => d.Schedules).WithOne().HasForeignKey(s => s.DoctorUUID);
-                entity.HasMany(d => d.TimeOffs).WithOne().HasForeignKey(t => t.DoctorUUID);
-                entity.HasMany(d => d.WorkShifts).WithOne().HasForeignKey(w => w.DoctorUUID);
             });
 
             modelBuilder.Entity<Patient>(entity =>

@@ -20,14 +20,6 @@ namespace WebServer.Models.ClinicData.Entities
         [ForeignKey("DoctorUUID")]
         public List<Schedule> Schedules { get; set; } = new List<Schedule>();
 
-        [Required]
-        [ForeignKey("DoctorUUID")]
-        public List<TimeOff> TimeOffs { get; set; } = new List<TimeOff>();
-
-        [Required]
-        [ForeignKey("DoctorUUID")]
-        public List<WorkShift> WorkShifts { get; set; } = new List<WorkShift>();
-
         [Column("area_of_expertise")]
         public string AreaOfExpertise { get; set; }
 

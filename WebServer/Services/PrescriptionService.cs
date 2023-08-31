@@ -51,7 +51,7 @@ namespace WebServer.Services
                 return null;
             }
 
-            var result = await PaginatedList<Prescription>.CreateAsync(prescriptions.AsNoTracking(), pageNumber ?? 1, pageSize);
+            var result = await PaginatedList<Prescription>.CreateAsync(prescriptions.OrderByDescending(p => p.DatePrescribed).ThenByDescending(p => p.DateAdministered).AsNoTracking(), pageNumber ?? 1, pageSize);
 
             PaginatedResultDTO<PrescriptionDTO> DTOs = new PaginatedResultDTO<PrescriptionDTO>(); ;
 

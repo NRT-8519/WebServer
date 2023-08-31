@@ -86,9 +86,28 @@ namespace WebServer.Services
             return DTOs;
         }
 
-        public async Task<PaginatedResultDTO<PatientDetailsDTO>> FindAllPaged(string sortOrder, string searchQuery, string currentFilter, int? pageNumber, int pageSize)
+        public async Task<PaginatedResultDTO<PatientDetailsDTO>> FindAllPaged(string sortOrder, string searchQuery, string currentFilter, int? pageNumber, int pageSize, Guid? doctor)
         {
-            var patients = from p in context.Patients select p;
+            IQueryable<Patient> patients;
+
+            if (doctor == null)
+            {
+                patients = context.Patients
+                .Include(d => d.Notes)
+                .Include(d => d.Prescriptions)
+                .Include(d => d.Schedules)
+                .Include(p => p.AssignedDoctor)
+                .Where(x => x.Role.Equals("PATIENT")).AsQueryable();
+            }
+            else
+            {
+                patients = context.Patients
+                .Include(d => d.Notes)
+                .Include(d => d.Prescriptions)
+                .Include(d => d.Schedules)
+                .Include(p => p.AssignedDoctor)
+                .Where(x => x.Role.Equals("PATIENT") && x.AssignedDoctor.UUID.Equals(doctor)).AsQueryable();
+            }
 
             if (searchQuery != null)
             {

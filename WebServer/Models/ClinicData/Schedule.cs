@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebServer.Models.UserData;
 
 namespace WebServer.Models.ClinicData
 {
@@ -11,7 +12,7 @@ namespace WebServer.Models.ClinicData
         [Required]
         [Key]
         [Column("schedule_id")]
-        public int ScheduleId { get; set; }
+        public uint? ScheduleId { get; set; }
 
         [Required]
         [Key]
@@ -19,9 +20,17 @@ namespace WebServer.Models.ClinicData
         public Guid DoctorUUID { get; set; }
 
         [Required]
+        [ForeignKey("DoctorUUID")]
+        public User Doctor { get; set; }
+
+        [Required]
         [Key]
         [Column("patient_uuid")]
         public Guid PatientUUID { get; set; }
+
+        [Required]
+        [ForeignKey("PatientUUID")]
+        public User Patient { get; set; }
 
         [Required]
         [Column("scheduled_date_time")]

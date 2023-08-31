@@ -34,9 +34,9 @@ namespace WebServer.Controllers
 
         [HttpGet("all/basic")]
         [Authorize(Roles = "ADMINISTRATOR,DOCTOR")]
-        public async Task<IActionResult> GetAllBasic(string sortOrder, string searchString, string currentFilter, int? pageNumber, int pageSize)
+        public async Task<IActionResult> GetAllBasic(string sortOrder, string searchString, string currentFilter, int? pageNumber, int pageSize, Guid? doctor)
         {
-            var result = await ((PatientService)service).FindAllPaged(sortOrder, searchString, currentFilter, pageNumber, pageSize);
+            var result = await ((PatientService)service).FindAllPaged(sortOrder, searchString, currentFilter, pageNumber, pageSize, doctor);
             if (result.items.Any())
             {
                 logger.LogInformation("Fetched all patients basic information (Paged).");

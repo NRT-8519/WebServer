@@ -20,6 +20,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+;
+
 builder.Services.AddDbContextPool<UserContext>(options =>
 {
     string ConnectionString = builder.Configuration["ConnectionStrings:MedicineDbConnectionString"];
@@ -50,6 +52,16 @@ builder.Services.AddDbContextPool<PrescriptionContext>(options =>
     string ConnectionString = builder.Configuration["ConnectionStrings:MedicineDbConnectionString"];
     options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
 });
+builder.Services.AddDbContextPool<ScheduleContext>(options =>
+{
+    string ConnectionString = builder.Configuration["ConnectionStrings:MedicineDbConnectionString"];
+    options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
+});
+builder.Services.AddDbContextPool<NoteContext>(options =>
+{
+    string ConnectionString = builder.Configuration["ConnectionStrings:MedicineDbConnectionString"];
+    options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
+});
 
 builder.Services.AddScoped<IDbService<User, UserBasicDTO, UserDetailsDTO>, UserService>();
 builder.Services.AddScoped<IDbService<Doctor, UserBasicDTO, DoctorDetailsDTO>, DoctorService>();
@@ -59,18 +71,25 @@ builder.Services.AddScoped<IDbService<Issuer, IssuerDTO, IssuerDTO>, IssuerServi
 builder.Services.AddScoped<IDbService<Medicine, MedicineDTO, MedicineDTO>, MedicineService>();
 builder.Services.AddScoped<IDbService<Request, RequestDTO, RequestDTO>, RequestService>();
 builder.Services.AddScoped<IDbService<Prescription, PrescriptionDTO, PrescriptionDTO>, PrescriptionService>();
+builder.Services.AddScoped<IDbService<Schedule, ScheduleDTO, ScheduleDTO>, ScheduleService>();
+builder.Services.AddScoped<IDbService<Notes, NotesDTO, NotesDTO>, NotesService>();
+
 
 builder.Services.AddScoped<ITokenService<JWTToken>, JWTManager>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+var CorsOriginPolicy = "_corsOriginPolicy";
+
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder =>
-        builder.AllowAnyOrigin()
-       .AllowAnyMethod()
-       .AllowAnyHeader());
+    options.AddPolicy(name: CorsOriginPolicy, builder =>
+    {
+        builder.AllowAnyMethod();
+        builder.AllowAnyHeader();
+        builder.AllowAnyOrigin().SetIsOriginAllowed((host) => true);
+    });
 });
 
 builder.Services.AddAuthentication(options =>
@@ -146,6 +165,6 @@ app.UseAuthentication();
 app.UseRouting();
 app.UseAuthorization();
 
-app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:7241").AllowCredentials());
+app.UseCors(CorsOriginPolicy);
 app.MapControllers();
 app.Run();

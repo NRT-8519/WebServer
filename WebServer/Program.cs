@@ -62,6 +62,11 @@ builder.Services.AddDbContextPool<NoteContext>(options =>
     string ConnectionString = builder.Configuration["ConnectionStrings:MedicineDbConnectionString"];
     options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
 });
+builder.Services.AddDbContextPool<ReportContext>(options =>
+{
+    string ConnectionString = builder.Configuration["ConnectionStrings:MedicineDbConnectionString"];
+    options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
+});
 
 builder.Services.AddScoped<IDbService<User, UserBasicDTO, UserDetailsDTO>, UserService>();
 builder.Services.AddScoped<IDbService<Doctor, UserBasicDTO, DoctorDetailsDTO>, DoctorService>();
@@ -73,6 +78,7 @@ builder.Services.AddScoped<IDbService<Request, RequestDTO, RequestDTO>, RequestS
 builder.Services.AddScoped<IDbService<Prescription, PrescriptionDTO, PrescriptionDTO>, PrescriptionService>();
 builder.Services.AddScoped<IDbService<Schedule, ScheduleDTO, ScheduleDTO>, ScheduleService>();
 builder.Services.AddScoped<IDbService<Notes, NotesDTO, NotesDTO>, NotesService>();
+builder.Services.AddScoped<IDbService<Report, ReportDTO, ReportDTO>, ReportService>();
 
 
 builder.Services.AddScoped<ITokenService<JWTToken>, JWTManager>();

@@ -35,7 +35,7 @@ namespace WebServer.Services
 
             return results;
         }
-        public async Task<PaginatedResultDTO<ScheduleDTO>> FindAllPaged(string sortOrder, int? pageNumber, int pageSize, Guid? patient, Guid? doctor, DateOnly? date)
+        public async Task<PaginatedResultDTO<ScheduleDTO>> FindAllPaged(string sortOrder, int? pageNumber, int pageSize, Guid? patient, Guid? doctor, DateTime? date)
         {
             IQueryable<Schedule> schedules;
 
@@ -54,7 +54,7 @@ namespace WebServer.Services
 
             if (schedules != null && date != null)
             {
-                schedules.Where(s => DateOnly.FromDateTime(s.ScheduledDateTime).Equals(date)).AsQueryable();
+                schedules = schedules.Where(s => s.ScheduledDateTime.Date.Equals(date.Value.Date)).AsQueryable();
             }
 
             var result = await PaginatedList<Schedule>.CreateAsync(schedules.AsNoTracking().OrderBy(s => s.ScheduledDateTime), pageNumber ?? 1, pageSize);            

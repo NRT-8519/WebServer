@@ -26,7 +26,7 @@ namespace WebServer.Controllers
 
         [HttpGet("all")]
         [Authorize(Roles = "ADMINISTRATOR,PATIENT,DOCTOR")]
-        public async Task<IActionResult> GetAllPaged([FromQuery] string sortOrder, [FromQuery] int? pageNumber, [FromQuery] int pageSize, [FromQuery] Guid? patient, [FromQuery] Guid? doctor, [FromQuery] DateOnly? date)
+        public async Task<IActionResult> GetAllPaged([FromQuery] string sortOrder, [FromQuery] int? pageNumber, [FromQuery] int pageSize, [FromQuery] Guid? patient, [FromQuery] Guid? doctor, [FromQuery] DateTime? date)
         {
             var result = await ((ScheduleService)service).FindAllPaged(sortOrder, pageNumber, pageSize, patient, doctor, date);
 

@@ -302,11 +302,15 @@ namespace WebServer.Services
                 p.Gender = entity.Gender;
                 p.Email = entity.Email;
                 p.PhoneNumber = entity.PhoneNumber;
+                
+                if (entity.AssignedDoctor != null)
+                {
+                    p.DoctorUUID = entity.AssignedDoctor.UUID;
+                }
 
                 p.IsDisabled = entity.IsDisabled;
                 p.IsExpired = entity.IsExpired;
                 p.PasswordExpiryDate = entity.PasswordExpiryDate;
-
                 context.Update(p);
                 return await context.SaveChangesAsync();
             }

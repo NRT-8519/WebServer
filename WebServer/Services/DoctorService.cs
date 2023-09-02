@@ -61,17 +61,20 @@ namespace WebServer.Services
                 List<UserBasicDTO> patientsList = new();
                 foreach (var p in patients)
                 {
-                    if (p.AssignedDoctor.UUID.Equals(doctor.UUID))
+                    if (p.AssignedDoctor != null)
                     {
-                        patientsList.Add(new UserBasicDTO
-                    {
-                        UUID = p.UUID,
-                        FirstName = p.FirstName,
-                        MiddleName = p.MiddleName,
-                        LastName = p.LastName,
-                        Username = p.Username, 
-                        Email = p.Email
-                    });
+                        if (p.AssignedDoctor.UUID.Equals(doctor.UUID))
+                        {
+                            patientsList.Add(new UserBasicDTO
+                            {
+                                UUID = p.UUID,
+                                FirstName = p.FirstName,
+                                MiddleName = p.MiddleName,
+                                LastName = p.LastName,
+                                Username = p.Username,
+                                Email = p.Email
+                            });
+                        }
                     }
                 }
                 DoctorDetailsDTO d = new()
@@ -107,8 +110,8 @@ namespace WebServer.Services
                 .Include(d => d.Notes)
                 .Include(d => d.Prescriptions)
                 .Include(d => d.Schedules)
-                .Where(x => x.Role.Equals("DOCTOR")).ToListAsync();
-            var patients = await context.Patients.Include(d => d.Notes).Include(d => d.Prescriptions).Include(d => d.Schedules).Include(p => p.AssignedDoctor).Where(x => x.Role.Equals("PATIENT")).ToListAsync();
+                .Where(d => !d.UUID.Equals(Guid.Empty) && d.Role.Equals("DOCTOR")).ToListAsync();
+            var patients = await context.Patients.Include(d => d.Notes).Include(d => d.Prescriptions).Include(d => d.Schedules).Include(p => p.AssignedDoctor).Where(p => p.Role.Equals("PATIENT")).ToListAsync();
 
 
             List<DoctorDetailsDTO> DTOs = new();
@@ -117,17 +120,20 @@ namespace WebServer.Services
                 List<UserBasicDTO> patientsList = new();
                 foreach (var p in patients)
                 {
-                    if (p.AssignedDoctor.UUID.Equals(doctor.UUID))
+                    if (p.AssignedDoctor != null)
                     {
-                        patientsList.Add(new UserBasicDTO
+                        if (p.AssignedDoctor.UUID.Equals(doctor.UUID))
                         {
-                            UUID = p.UUID,
-                            FirstName = p.FirstName,
-                            MiddleName = p.MiddleName,
-                            LastName = p.LastName,
-                            Username = p.Username,
-                            Email = p.Email
-                        });
+                            patientsList.Add(new UserBasicDTO
+                            {
+                                UUID = p.UUID,
+                                FirstName = p.FirstName,
+                                MiddleName = p.MiddleName,
+                                LastName = p.LastName,
+                                Username = p.Username,
+                                Email = p.Email
+                            });
+                        }
                     }
                 }
 

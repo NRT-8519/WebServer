@@ -169,6 +169,7 @@ namespace WebServer.Services
             {
                 Company c = new()
                 {
+                    Id = 0,
                     UUID = Guid.NewGuid(),
                     Name = entity.Name,
                     Country = entity.Country,

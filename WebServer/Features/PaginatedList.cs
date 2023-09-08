@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Utilities;
 
 namespace WebServer.Features
 {
@@ -24,10 +25,17 @@ namespace WebServer.Features
 
         public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
         {
-            int count = await source.CountAsync();
-            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            if (source != null)
+            {
+                int count = await source.CountAsync();
+                var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
 
-            return new PaginatedList<T>(items, count, pageIndex, pageSize);
+                return new PaginatedList<T>(items, count, pageIndex, pageSize);
+            }
+            else
+            {
+                return new PaginatedList<T>(new List<T>(), 0, pageIndex, pageSize);
+            }
         }
     }
 }

@@ -115,8 +115,8 @@ namespace WebServer.Services
                 DoctorUUID = Guid.Parse(entity.Doctor),
                 PatientUUID = Guid.Parse(entity.Patient),
                 MedicineUUID = Guid.Parse(entity.Medicine),
-                DatePrescribed = entity.Prescribed,
-                DateAdministered = entity.Administered,
+                DatePrescribed = entity.Prescribed ?? null,
+                DateAdministered = entity.Administered ?? null,
                 PrescriptionNotes = entity.Notes
             };
 

@@ -170,6 +170,7 @@ namespace WebServer.Services
             {
                 Issuer i = new()
                 {
+                    Id = 0,
                     UUID = Guid.NewGuid(),
                     Name = entity.Name,
                     City = entity.City,

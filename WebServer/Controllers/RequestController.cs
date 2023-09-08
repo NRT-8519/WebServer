@@ -31,7 +31,7 @@ namespace WebServer.Controllers
         {
             var result = await ((RequestService)service).FindAllPaged(sortOrder, pageNumber, pageSize, patient, doctor);
 
-            if (result.items.Any())
+            if (result != null && result.items.Any())
             {
                 logger.LogInformation("Fetched all companies information (Paged).");
                 return Ok(result);

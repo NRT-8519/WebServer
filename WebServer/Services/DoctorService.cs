@@ -185,47 +185,55 @@ namespace WebServer.Services
                 .Include(d => d.Prescriptions)
                 .Include(d => d.Schedules)
                 .Where(x => x.UUID.Equals(UUID) && x.Role.Equals("DOCTOR")).AsNoTracking().SingleOrDefaultAsync();
-            var patients = await context.Patients.Include(d => d.Notes).Include(d => d.Prescriptions).Include(d => d.Schedules).Include(p => p.AssignedDoctor).Where(x => x.Role.Equals("PATIENT")).AsNoTracking().ToListAsync();
-
-            List<UserBasicDTO> patientsList = new();
-            foreach (var p in patients)
+            
+            if (result != null)
             {
-                if (p.AssignedDoctor.UUID.Equals(result.UUID))
+                var patients = await context.Patients.Include(d => d.Notes).Include(d => d.Prescriptions).Include(d => d.Schedules).Include(p => p.AssignedDoctor).Where(x => x.Role.Equals("PATIENT")).AsNoTracking().ToListAsync();
+
+                List<UserBasicDTO> patientsList = new();
+                foreach (var p in patients)
                 {
-                    patientsList.Add(new UserBasicDTO
+                    if (p.AssignedDoctor.UUID.Equals(result.UUID))
                     {
-                        UUID = p.UUID,
-                        FirstName = p.FirstName,
-                        MiddleName = p.MiddleName,
-                        LastName = p.LastName,
-                        Username = p.Username,
-                        Email = p.Email
-                    });
+                        patientsList.Add(new UserBasicDTO
+                        {
+                            UUID = p.UUID,
+                            FirstName = p.FirstName,
+                            MiddleName = p.MiddleName,
+                            LastName = p.LastName,
+                            Username = p.Username,
+                            Email = p.Email
+                        });
+                    }
                 }
+
+                DoctorDetailsDTO doctor = new()
+                {
+                    UUID = result.UUID,
+                    FirstName = result.FirstName,
+                    MiddleName = result.MiddleName,
+                    LastName = result.LastName,
+                    Username = result.Username,
+                    Title = result.Title,
+                    DateOfBirth = result.DateOfBirth,
+                    Gender = result.Gender,
+                    SSN = result.SSN,
+                    Email = result.Email,
+                    PhoneNumber = result.PhoneNumber,
+                    PasswordExpiryDate = result.PasswordExpiryDate,
+                    IsDisabled = result.IsDisabled,
+                    IsExpired = result.IsExpired,
+                    AreaOfExpertise = result.AreaOfExpertise,
+                    RoomNumber = result.RoomNumber,
+                    Patients = patientsList
+                };
+
+                return doctor;
             }
-
-            DoctorDetailsDTO doctor = new()
+            else
             {
-                UUID = result.UUID,
-                FirstName = result.FirstName,
-                MiddleName = result.MiddleName,
-                LastName = result.LastName,
-                Username = result.Username,
-                Title = result.Title,
-                DateOfBirth = result.DateOfBirth,
-                Gender = result.Gender,
-                SSN = result.SSN,
-                Email = result.Email,
-                PhoneNumber = result.PhoneNumber,
-                PasswordExpiryDate = result.PasswordExpiryDate,
-                IsDisabled = result.IsDisabled,
-                IsExpired = result.IsExpired,
-                AreaOfExpertise = result.AreaOfExpertise,
-                RoomNumber = result.RoomNumber,
-                Patients = patientsList
-            };
-
-            return doctor;
+                return null;
+            }
         }
 
         public async Task<int> Insert(DoctorDetailsDTO entity)

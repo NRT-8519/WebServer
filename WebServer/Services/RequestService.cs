@@ -70,9 +70,13 @@ namespace WebServer.Services
             {
                 requests = context.Requests.Include(r => r.Doctor).Include(r => r.Patient).Where(r => r.DoctorUUID.Equals(doctor)).AsQueryable();
             }
+            else if ((patient != null || !patient.Equals(Guid.Empty)) && (doctor != null || !doctor.Equals(Guid.Empty)))
+            {
+                requests = context.Requests.Include(r => r.Doctor).Include(r => r.Patient).Where(r => r.DoctorUUID.Equals(doctor) && r.PatientUUID.Equals(patient)).AsQueryable();
+            }
             else
             {
-                return null;
+                requests = null;
             }
 
             var result = await PaginatedList<Request>.CreateAsync(requests.AsNoTracking(), pageNumber ?? 1, pageSize);

@@ -132,12 +132,7 @@ namespace WebServer.Services
                 );
             }
 
-            var result = await PaginatedList<Patient>.CreateAsync(patients
-                .Include(d => d.Notes)
-                .Include(d => d.Prescriptions)
-                .Include(d => d.Schedules)
-                .Include(p => p.AssignedDoctor)
-                .AsNoTracking(), pageNumber ?? 1, pageSize);
+            var result = await PaginatedList<Patient>.CreateAsync(patients.AsNoTracking(), pageNumber ?? 1, pageSize);
 
             PaginatedResultDTO<PatientDetailsDTO> DTOs = new()
             {
@@ -266,7 +261,7 @@ namespace WebServer.Services
                     Password = Password.Generate(15, 5),
                     IsDisabled = false,
                     IsExpired = false,
-                    AssignedDoctor = null,
+                    DoctorUUID = entity.AssignedDoctor.UUID,
                     PasswordExpiryDate = DateTime.Now.AddMonths(6),
                     Role = "PATIENT"
                 };

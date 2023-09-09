@@ -260,7 +260,7 @@ namespace WebServer.Services
                     IsDisabled = false,
                     IsExpired = false,
                     PasswordExpiryDate = DateTime.Now.AddMonths(6),
-                    Role = "Doctor"
+                    Role = "DOCTOR"
                 };
 
                 context.Add(d);

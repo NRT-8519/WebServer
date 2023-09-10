@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using WebServer.Services.Contexts;
 using WebServer.Models.UserData;
 using System.IdentityModel.Tokens.Jwt;
+using WebServer.Controllers;
 
 namespace WebServer.Authentication
 {
@@ -20,9 +21,9 @@ namespace WebServer.Authentication
             this.configuration = configuration;
         }
 
-        public JWTToken Authenticate(Login login)
+        public async Task<JWTToken> Authenticate(Login login)
         {
-            User user = userContext.Users.FirstOrDefault(u => u.Username.Equals(login.Username) && u.Password.Equals(login.Password));
+            User user = await userContext.Users.SingleOrDefaultAsync(u => u.Username.Equals(login.Username) && u.Password.Equals(login.Password));
 
             if (user == null || user == default)
             {
@@ -66,10 +67,27 @@ namespace WebServer.Authentication
             }
         }
 
-        public bool Validate(string token)
+        public async Task<bool> Validate(string token)
         {
             var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]);
             var tokenHandler = new JwtSecurityTokenHandler();
+
+            var parsed = JwtParser.ParseClaimsFromJwt(token);
+
+
+            if (!parsed.IsNullOrEmpty())
+            {
+                var UUID = parsed.Single(c => c.Type.Equals("jti")).Value;
+                var user = await userContext.Users.SingleOrDefaultAsync(u => u.UUID.Equals(Guid.Parse(UUID)));
+
+                if (user != null)
+                {
+                    if (user.IsDisabled || user.IsExpired)
+                    {
+                        return false;
+                    }
+                }
+            }
 
             try
             {

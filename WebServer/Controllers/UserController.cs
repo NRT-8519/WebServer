@@ -220,9 +220,9 @@ namespace WebServer.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate(Login user)
+        public async Task<IActionResult> Authenticate(Login user)
         {
-            var token = tokenService.Authenticate(user);
+            var token = await tokenService.Authenticate(user);
             if (token == null || token.IsAuthSuccessful == false)
             {
                 return Unauthorized(token);
@@ -235,9 +235,9 @@ namespace WebServer.Controllers
 
         [AllowAnonymous]
         [HttpGet("validate")]
-        public IActionResult Validate(string token)
+        public async Task<IActionResult> Validate(string token)
         {
-            return tokenService.Validate(token) ? Ok(true) : Unauthorized(false);
+            return await tokenService.Validate(token) ? Ok(true) : Unauthorized(false);
         }
     }
 }

@@ -53,7 +53,7 @@ namespace WebServer.Services
 
         public async Task<int> FindAllDoctorsCount()
         {
-            return await context.Users.Where(u => u.Role.Equals("DOCTOR")).CountAsync();
+            return await context.Users.Where(u => u.Role.Equals("DOCTOR") && !u.UUID.Equals(Guid.Empty)).CountAsync();
         }
 
         public async Task<int> FindAllPatientsCount()

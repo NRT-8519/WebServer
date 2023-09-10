@@ -25,6 +25,15 @@ namespace WebServer.Authentication
         {
             User user = await userContext.Users.SingleOrDefaultAsync(u => u.Username.Equals(login.Username) && u.Password.Equals(login.Password));
 
+            if (user.PasswordExpiryDate < DateTime.Now) 
+            {
+                user.IsExpired = true;
+                userContext.Users.Update(user);
+                await userContext.SaveChangesAsync();
+
+                return new JWTToken { Token = "invalid_token", IsAuthSuccessful = false, ErrorMessage = "Password expired. Contact administrator." };
+            }
+
             if (user == null || user == default)
             {
                 return new JWTToken { Token = "invalid_token", IsAuthSuccessful = false, ErrorMessage = "Invalid credentials." };

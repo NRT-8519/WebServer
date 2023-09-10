@@ -26,32 +26,43 @@ namespace WebServer.Authentication
 
             if (user == null || user == default)
             {
-                return new JWTToken { Token = "invalid_token", IsAuthSuccessful = false, ErrorMessage = "Invalid credentials" };
+                return new JWTToken { Token = "invalid_token", IsAuthSuccessful = false, ErrorMessage = "Invalid credentials." };
             }
             else
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]);
-                var tokenDescriptor = new SecurityTokenDescriptor
+                if (user.IsDisabled)
                 {
-                    Subject = new ClaimsIdentity(new Claim[]
+                    return new JWTToken { Token = "invalid_token", IsAuthSuccessful = false, ErrorMessage = "Account disabled." };
+                }
+                else if (user.IsExpired)
+                {
+                    return new JWTToken { Token = "invalid_token", IsAuthSuccessful = false, ErrorMessage = "Password expired. Contact administrator." };
+                }
+                else
+                {
+                    var tokenHandler = new JwtSecurityTokenHandler();
+                    var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]);
+                    var tokenDescriptor = new SecurityTokenDescriptor
                     {
+                        Subject = new ClaimsIdentity(new Claim[]
+                        {
                         new Claim(ClaimTypes.Name, user.Username),
                         new Claim(ClaimTypes.NameIdentifier, user.FirstName + " " + (user.MiddleName != null ? user.MiddleName.First() + ". " : "") + user.LastName),
                         new Claim(ClaimTypes.Role, user.Role),
                         new Claim(JwtRegisteredClaimNames.Jti, user.UUID.ToString()),
                         new Claim(JwtRegisteredClaimNames.Aud, configuration["Jwt:Audience"]),
                         new Claim(JwtRegisteredClaimNames.Iss, configuration["Jwt:Issuer"])
-                    }),
-                    Expires = DateTime.UtcNow.AddMinutes(60 * 8),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
-                };
+                        }),
+                        Expires = DateTime.UtcNow.AddMinutes(60 * 8),
+                        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
+                    };
 
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                
-                JWTToken JWTToken = new JWTToken { Token = tokenHandler.WriteToken(token), IsAuthSuccessful = true };
+                    var token = tokenHandler.CreateToken(tokenDescriptor);
 
-                return JWTToken;
+                    JWTToken JWTToken = new JWTToken { Token = tokenHandler.WriteToken(token), IsAuthSuccessful = true };
+
+                    return JWTToken;
+                }
             }
         }
 

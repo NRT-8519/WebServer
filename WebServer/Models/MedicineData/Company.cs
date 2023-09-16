@@ -18,18 +18,22 @@ namespace WebServer.Models.MedicineData
 
         [Column("name")]
         [Key]
+        [StringLength(100)]
         [Required]
         public string Name { get; set; }
 
         [Column("country")]
         [Required]
+        [StringLength(36)]
         public string Country { get; set; }
 
         [Column("city")]
+        [StringLength(100)]
         [Required]
         public string City { get; set; }
 
         [Column("address")]
+        [StringLength(100)]
         [Required]
         public string Address { get; set; }
     }

@@ -14,14 +14,17 @@ namespace WebServer.Models.MedicineData
         public Guid? UUID { get; set; }
 
         [Column("clearance_number")]
+        [RegularExpression(@"515-01-0[0-9]{4}-[0-9]{2}-[0-9]{3}"]
         [Required]
         public string ClearanceNumber { get; set; }
 
         [Column("begin_date")]
+        [DataType(DataType.Date)]
         [Required]
         public DateOnly BeginDate { get; set; }
 
         [Column("expiry_date")]
+        [DataType(DataType.Date)]
         [Required]
         public DateOnly ExpiryDate { get; set; }
     }

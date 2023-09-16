@@ -33,10 +33,12 @@ namespace WebServer.Models.ClinicData
         public User Patient { get; set; }
 
         [Required]
+        [DataType(DataType.DateTime)]
         [Column("scheduled_date_time")]
         public DateTime ScheduledDateTime { get; set; }
 
         [Required]
+        [StringLength(30, MinimumLength = 2)]
         [Column("event")]
         public string Event { get; set; }
 

@@ -56,12 +56,12 @@ namespace WebServer.Authentication
                     {
                         Subject = new ClaimsIdentity(new Claim[]
                         {
-                        new Claim(ClaimTypes.Name, user.Username),
-                        new Claim(ClaimTypes.NameIdentifier, user.FirstName + " " + (user.MiddleName != null ? user.MiddleName.First() + ". " : "") + user.LastName),
-                        new Claim(ClaimTypes.Role, user.Role),
-                        new Claim(JwtRegisteredClaimNames.Jti, user.UUID.ToString()),
-                        new Claim(JwtRegisteredClaimNames.Aud, configuration["Jwt:Audience"]),
-                        new Claim(JwtRegisteredClaimNames.Iss, configuration["Jwt:Issuer"])
+                        new(ClaimTypes.Name, user.Username),
+                        new(ClaimTypes.NameIdentifier, user.FirstName + " " + (user.MiddleName != null ? user.MiddleName.First() + ". " : "") + user.LastName),
+                        new(ClaimTypes.Role, user.Role),
+                        new(JwtRegisteredClaimNames.Jti, user.UUID.ToString()),
+                        new(JwtRegisteredClaimNames.Aud, configuration["Jwt:Audience"]),
+                        new(JwtRegisteredClaimNames.Iss, configuration["Jwt:Issuer"])
                         }),
                         Expires = DateTime.UtcNow.AddMinutes(60 * 8),
                         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)

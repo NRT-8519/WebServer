@@ -21,9 +21,11 @@ namespace WebServer.Models.ClinicData.Entities
         public List<Schedule> Schedules { get; set; } = new List<Schedule>();
 
         [Column("area_of_expertise")]
+        [StringLength(100)]
         public string AreaOfExpertise { get; set; }
 
         [Column("room_number")]
+        [Range(101, 999]
         public int RoomNumber { get; set; }
     }
 }

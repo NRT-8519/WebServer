@@ -30,6 +30,7 @@ namespace WebServer.Models.ClinicData
         public User Patient { get; set; }
 
         [Required]
+        [StringLength(30)]
         [Column("note_title")]
         public string NoteTitle { get; set; }
 

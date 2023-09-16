@@ -24,12 +24,12 @@ namespace WebServer.Models
 
         [Required]
         [Column("title")]
-        [StringLength(50)]
+        [StringLength(50, MinimumLength = 2)]
         public string Title { get; set; }
 
         [Required]
         [Column("description")]
-        [StringLength(100)]
+        [StringLength(100, MinimumLength = 2)]
         public string Description { get; set; }
 
         [Required]

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using WebServer.Models.MedicineData;
 using WebServer.Models.UserData;
 
@@ -38,13 +39,16 @@ namespace WebServer.Models.ClinicData
         [ForeignKey("MedicineUUID")]
         public Medicine Medicine { get; set; }
 
+        [AllowNull]
         [Column("date_prescribed")]
         public DateOnly? DatePrescribed { get; set; }
 
+        [AllowNull]
         [Column("date_administered")]
         public DateOnly? DateAdministered { get; set; }
 
         [Column("prescription_notes")]
+        [StringLength(100)]
         public string PrescriptionNotes { get; set; }
     }
 }

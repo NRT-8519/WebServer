@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using WebServer.Models.ClinicData.Entities;
 using WebServer.Models.UserData;
 
 namespace WebServer.Models
@@ -33,10 +32,12 @@ namespace WebServer.Models
 
         [Required]
         [Column("title")]
+        [StringLength(50, MinimumLength = 2)]
         public string Title { get; set; }
 
         [Required]
         [Column("description")]
+        [StringLength(100, MinimumLength = 2)]
         public string Description { get; set; }
 
         [Required]
@@ -49,10 +50,12 @@ namespace WebServer.Models
 
         [Required]
         [Column("reason")]
+        [StringLength(100, MinimumLength = 2)]
         public string Reason { get; set; }
 
         [Required]
         [Column("request_date")]
+        [DataType(DataType.DateTime)]
         public DateTime RequestDate { get; set; }
     }
 }

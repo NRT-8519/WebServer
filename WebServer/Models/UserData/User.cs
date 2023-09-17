@@ -98,7 +98,7 @@ namespace WebServer.Models.UserData
         public string SSN { get; set; }
 
         [Column("gender")]
-        [RegularExpression(@"(M|F){1}"]
+        [RegularExpression(@"(M|F){1}")]
         [Required]
         public char Gender { get; set; }
 

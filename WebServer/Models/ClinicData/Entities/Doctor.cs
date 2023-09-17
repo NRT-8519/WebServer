@@ -25,7 +25,7 @@ namespace WebServer.Models.ClinicData.Entities
         public string AreaOfExpertise { get; set; }
 
         [Column("room_number")]
-        [Range(101, 999]
+        [Range(101, 999)]
         public int RoomNumber { get; set; }
     }
 }

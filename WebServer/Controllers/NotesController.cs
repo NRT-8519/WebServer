@@ -30,7 +30,7 @@ namespace WebServer.Controllers
         public async Task<IActionResult> GetAllPaged(string sortOrder, int? pageNumber, int pageSize, Guid patient, Guid doctor)
         {
             var result = await ((NotesService) service).FindAllPaged(sortOrder, pageNumber, pageSize, patient, doctor);
-            return result != null ? Ok(result) : NoContent();
+            return Ok(result);
         }
 
         [HttpGet("{id:int}")]

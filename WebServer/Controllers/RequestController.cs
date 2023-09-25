@@ -31,16 +31,7 @@ namespace WebServer.Controllers
         {
             var result = await ((RequestService)service).FindAllPaged(sortOrder, pageNumber, pageSize, patient, doctor);
 
-            if (result != null && result.items.Any())
-            {
-                logger.LogInformation("Fetched all companies information (Paged).");
-                return Ok(result);
-            }
-            else
-            {
-                logger.LogInformation("Companies database empty.");
-                return NoContent();
-            }
+            return Ok(result);
         }
 
         [HttpGet("count")]

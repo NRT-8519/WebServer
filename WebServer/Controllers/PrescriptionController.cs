@@ -62,16 +62,7 @@ namespace WebServer.Controllers
         public async Task<IActionResult> GetAllPaged([FromQuery] string sortOrder, [FromQuery] int? pageNumber, [FromQuery] int pageSize, [FromQuery] Guid? doctor, [FromQuery] Guid? patient)
         {
             var result = await ((PrescriptionService)service).FindAllPaged(sortOrder, pageNumber, pageSize, doctor, patient);
-            if (result.items.Any())
-            {
-                logger.LogInformation("Fetched all prescriptions basic information (Paged).");
-                return Ok(result);
-            }
-            else
-            {
-                logger.LogInformation("Prescriptions database empty.");
-                return NoContent();
-            }
+            return Ok(result);
         }
 
         [HttpGet("count")]

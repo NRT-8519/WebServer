@@ -49,7 +49,7 @@ namespace WebServer.Services
             }
             else
             {
-                return null;
+                schedules = null;
             }
 
             if (schedules != null && date != null)

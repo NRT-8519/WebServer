@@ -30,16 +30,7 @@ namespace WebServer.Controllers
         {
             var result = await ((ScheduleService)service).FindAllPaged(sortOrder, pageNumber, pageSize, patient, doctor, date);
 
-            if (result.items.Any())
-            {
-                logger.LogInformation("Fetched all schedules information (Paged).");
-                return Ok(result);
-            }
-            else
-            {
-                logger.LogInformation("Schedules database empty.");
-                return NoContent();
-            }
+            return Ok(result);
         }
 
         [HttpGet("count")]
